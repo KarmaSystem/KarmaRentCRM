@@ -12,7 +12,7 @@ const rentalDaysByTime = (startDate: Date, endDate: Date, startTime: string, end
 };
 
 export async function GET(request: NextRequest) {
-  try { const user = await getUser(request); await prisma.booking.deleteMany({ where: { userId: user.id, status: "CANCELLED", archiveUntil: { lt: new Date() } } }); const archived = request.nextUrl.searchParams.get("archived") === "true"; const bookings = await prisma.booking.findMany({ where: { userId: user.id, status: archived ? "CANCELLED" : { not: "CANCELLED" } }, include: { asset: true, payments: true }, orderBy: { startDate: "asc" } }); return Response.json(bookings); } catch (e) { return jsonError(e, 401); }
+  try { const { user, member } = await getAccess(request); if (request.nextUrl.searchParams.get("archived") === "true" && member && !["ADMIN", "ACCOUNTANT"].includes(member.role)) throw new Error("Архив доступен администратору и бухгалтеру"); await prisma.booking.deleteMany({ where: { userId: user.id, status: "CANCELLED", archiveUntil: { lt: new Date() } } }); const archived = request.nextUrl.searchParams.get("archived") === "true"; const bookings = await prisma.booking.findMany({ where: { userId: user.id, status: archived ? "CANCELLED" : { not: "CANCELLED" } }, include: { asset: true, payments: true }, orderBy: { startDate: "asc" } }); return Response.json(bookings); } catch (e) { return jsonError(e, 401); }
 }
 export async function POST(request: NextRequest) {
   try {
@@ -40,6 +40,14 @@ export async function PATCH(request: NextRequest) {
     const id = String(body.id);
     const current = await prisma.booking.findFirst({ where: { id, userId: user.id } });
     if (!current) throw new Error("Бронь не найдена");
+    if (body.restore === true) {
+      if (member && !["ADMIN", "ACCOUNTANT"].includes(member.role)) throw new Error("Восстановление доступно администратору и бухгалтеру");
+      const conflict = await prisma.booking.findFirst({ where: { userId: user.id, assetId: current.assetId, id: { not: id }, status: { notIn: ["CANCELLED", "COMPLETED"] }, startDate: { lt: current.endDate }, endDate: { gt: current.startDate } } });
+      if (conflict) throw new Error("Нельзя восстановить: период пересекается с действующей бронью");
+      const restored = await prisma.booking.update({ where: { id }, data: { status: "PENDING", archiveUntil: null } });
+      await prisma.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: "RESTORE", reason: "Бронь восстановлена из архива", before: { status: current.status }, after: { status: "PENDING", archiveUntil: null } } });
+      return Response.json(restored);
+    }
     const startDate = body.startDate ? new Date(body.startDate) : current.startDate;
     const endDate = body.endDate ? new Date(body.endDate) : current.endDate;
     const dailyRate = body.dailyRate != null ? Number(body.dailyRate) : Number(current.dailyRate);
