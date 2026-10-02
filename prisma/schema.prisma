@@ -101,6 +101,7 @@ model User {
   partners      Partner[]
   acts          HandoverAct[]
   teamMembers   TeamMember[]
+  auditLogs     AuditLog[]
 
   @@map("users")
 }
@@ -291,4 +292,22 @@ model TeamMember {
   @@index([ownerId, active])
   @@index([ownerId, email])
   @@map("team_members")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  actorName String   @map("actor_name")
+  actorRole String?  @map("actor_role")
+  entity    String
+  entityId  String   @map("entity_id")
+  action    String
+  reason    String?
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, entity, entityId, createdAt])
+  @@map("audit_logs")
 }

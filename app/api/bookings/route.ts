@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getUser, jsonError } from "@/lib/api";
+import { getAccess, getUser, jsonError } from "@/lib/api";
 import { calculateTotal, assertValidPhone } from "@/lib/rental";
 import { bookingSchema } from "@/lib/validation";
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const user = await getUser(request);
+    const { user, member } = await getAccess(request);
     const body = await request.json();
     const id = String(body.id);
     const current = await prisma.booking.findFirst({ where: { id, userId: user.id } });
@@ -40,7 +40,15 @@ export async function PATCH(request: NextRequest) {
     const overlap = await prisma.booking.findFirst({ where: { userId: user.id, assetId: current.assetId, id: { not: id }, status: { notIn: ["CANCELLED", "COMPLETED"] }, startDate: { lt: endDate }, endDate: { gt: startDate } } });
     if (overlap) throw new Error("Новый период пересекается с другой бронью");
     const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / 86400000));
-    const updated = await prisma.booking.update({ where: { id }, data: { startDate, endDate, startTime: String(body.startTime || current.startTime), endTime: String(body.endTime || current.endTime), dailyRate, totalPrice: days * dailyRate } });
+    const nextStartTime = String(body.startTime || current.startTime);
+    const nextEndTime = String(body.endTime || current.endTime);
+    const before = { startDate: current.startDate.toISOString(), endDate: current.endDate.toISOString(), startTime: current.startTime, endTime: current.endTime, dailyRate: String(current.dailyRate), totalPrice: String(current.totalPrice) };
+    const after = { startDate: startDate.toISOString(), endDate: endDate.toISOString(), startTime: nextStartTime, endTime: nextEndTime, dailyRate: String(dailyRate), totalPrice: String(days * dailyRate) };
+    const updated = await prisma.$transaction(async tx => {
+      const result = await tx.booking.update({ where: { id }, data: { startDate, endDate, startTime: nextStartTime, endTime: nextEndTime, dailyRate, totalPrice: days * dailyRate } });
+      await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: "UPDATE", reason: String(body.reason || "Без комментария"), before, after } });
+      return result;
+    });
     return Response.json(updated);
   } catch (e) { return jsonError(e); }
 }
