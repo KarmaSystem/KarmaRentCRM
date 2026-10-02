@@ -1,0 +1,9 @@
+{
+  "name": "Karma Rent",
+  "short_name": "Karma Rent",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f8fb",
+  "theme_color": "#123447",
+  "icons": [{"src": "/karmarent-logo.png", "sizes": "1254x1254", "type": "image/png", "purpose": "any maskable"}]
+}
