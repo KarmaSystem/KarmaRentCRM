@@ -1,0 +1,4 @@
+import crypto from "node:crypto";
+const secret = () => process.env.AUTH_SECRET || "change-this-auth-secret";
+export function signSession(userId: string) { const payload = Buffer.from(JSON.stringify({ userId, exp: Date.now() + 1000 * 60 * 60 * 24 * 30 })).toString("base64url"); const sig = crypto.createHmac("sha256", secret()).update(payload).digest("base64url"); return `${payload}.${sig}`; }
+export function verifySession(value?: string) { if (!value) return null; const [payload, sig] = value.split("."); if (!payload || !sig) return null; const expected = crypto.createHmac("sha256", secret()).update(payload).digest("base64url"); if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return null; const parsed = JSON.parse(Buffer.from(payload, "base64url").toString()) as { userId: string; exp: number }; return parsed.exp > Date.now() ? parsed.userId : null; }

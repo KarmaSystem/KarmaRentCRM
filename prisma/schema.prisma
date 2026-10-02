@@ -112,7 +112,8 @@ model Asset {
   status             AssetStatus   @default(AVAILABLE)
   sortOrder          Int           @default(0) @map("sort_order")
   statusColor        String        @default("#50b8ed") @map("status_color")
-  nextServiceDate    DateTime?     @map("next_service_date")
+  currentMileage     Int?          @map("current_mileage")
+  serviceMileage     Int?          @map("service_mileage")
   serviceNote        String?       @map("service_note")
   createdAt          DateTime      @default(now()) @map("created_at")
   updatedAt          DateTime      @updatedAt @map("updated_at")
@@ -123,7 +124,7 @@ model Asset {
 
   @@index([userId, sortOrder])
   @@index([userId, status])
-  @@index([userId, nextServiceDate])
+  @@index([userId, serviceMileage])
   @@index([userId, category])
   @@map("assets")
 }
