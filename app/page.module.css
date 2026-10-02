@@ -191,3 +191,29 @@
   .notificationButton,.headerTools .iconButton{display:grid!important;visibility:visible!important}
   .notificationCenter{display:block!important}
 }
+
+/* Keep fleet rows visible on narrow screens: text gets the flexible area, actions stay compact. */
+.fleetGroup .manageRow>div:first-child{min-width:0;flex:1 1 auto;color:#173c4d}
+.fleetGroup .manageRow>div:first-child b{display:block;min-width:0;overflow:visible;text-overflow:clip;white-space:normal;overflow-wrap:anywhere;line-height:1.15}
+.fleetGroup .manageRow>div:first-child span{display:block;min-width:0;overflow:visible;text-overflow:clip;white-space:normal;line-height:1.1}
+.dark .fleetGroup .manageRow>div:first-child{color:#f8fbff}
+@media(max-width:799px){
+  .fleetGroup{overflow:visible!important}
+  .fleetGroup .manageRow{display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px;overflow:visible!important}
+  .fleetGroup .manageRow>div:first-child{width:auto;max-width:none;min-width:0}
+  .fleetGroup .manageRow>div:first-child b{font-size:10px!important;white-space:normal!important;overflow:visible!important}
+  .fleetGroup .manageRow>div:first-child .assetNumber{font-size:12px!important;white-space:nowrap!important;display:inline-block!important}
+  .fleetGroup .manageRow>div:first-child span{font-size:8px!important;white-space:normal!important}
+  .fleetGroup .rowActions{max-width:112px!important;gap:2px!important;flex-wrap:nowrap!important}
+  .fleetGroup .rowActions .editButton,.fleetGroup .rowActions .deleteButton{max-width:54px!important;min-width:0!important;padding:5px 4px!important;font-size:8px!important;line-height:1.05!important;white-space:normal!important;overflow:visible!important}
+}
+
+/* Final cross-device header and search layout. */
+.header{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;position:relative!important;overflow:visible!important}
+.header>div:first-child{min-width:0;flex:1 1 auto}
+.headerTools{flex:0 0 auto!important;z-index:110!important}
+.notificationCenter{z-index:1000!important;right:0!important}
+.profileSearch{width:min(100%,420px)!important}
+.profileSearch .searchBox{width:100%!important;max-width:420px!important}
+@media(min-width:800px){.headerTools .notificationButton,.headerTools .iconButton{width:38px!important;height:38px!important}.notificationCenter{top:62px!important}.profileSearch{width:min(100%,420px)!important}}
+@media(max-width:799px){.profileSearch{width:min(100%,270px)!important}.profileSearch .searchBox{width:100%!important;max-width:270px!important}.header{gap:8px!important}.header h1{font-size:18px!important}.headerTools{gap:4px!important}}
