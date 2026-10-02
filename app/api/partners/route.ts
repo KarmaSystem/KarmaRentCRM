@@ -1,0 +1,7 @@
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getUser, jsonError } from "@/lib/api";
+import { z } from "zod";
+const schema = z.object({ name: z.string().min(2), contactName: z.string().optional(), phone: z.string().optional(), email: z.string().email().optional().or(z.literal("")), commissionType: z.enum(["PERCENT", "FIXED"]), commissionValue: z.coerce.number().nonnegative(), notes: z.string().optional() });
+export async function GET(request: NextRequest) { try { const user = await getUser(request); return Response.json(await prisma.partner.findMany({ where: { userId: user.id }, orderBy: { name: "asc" } })); } catch (e) { return jsonError(e, 401); } }
+export async function POST(request: NextRequest) { try { const user = await getUser(request); const data = schema.parse(await request.json()); if (data.commissionType === "PERCENT" && data.commissionValue > 100) throw new Error("Процент комиссии не может быть больше 100"); return Response.json(await prisma.partner.create({ data: { ...data, userId: user.id } }), { status: 201 }); } catch (e) { return jsonError(e); } }
