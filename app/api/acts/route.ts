@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
       assetName: booking.asset.name,
       startDate: booking.startDate.toISOString(),
       endDate: booking.endDate.toISOString(),
+      startTime: booking.startTime,
+      endTime: booking.endTime,
       totalPrice: String(booking.totalPrice),
       dailyRate: String(booking.dailyRate),
       depositAmount: String(booking.depositAmount),

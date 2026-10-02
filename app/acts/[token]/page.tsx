@@ -11,13 +11,13 @@ export default async function HandoverActPage({ params }: { params: Promise<{ to
   const data = act.payload as Record<string, unknown>;
   const start = new Date(String(data.startDate));
   const end = new Date(String(data.endDate));
-  const days = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000));
+  const startAt = new Date(`${String(data.startDate).slice(0, 10)}T${String(data.startTime || "12:00")}`); const endAt = new Date(`${String(data.endDate).slice(0, 10)}T${String(data.endTime || "12:00")}`); const days = Math.max(1, Math.ceil((endAt.getTime() - startAt.getTime()) / 86400000));
   return <main className="actPage"><section className="actCard">
     <div className="actBrand"><div className="actLogo">KR</div><div><b>KARMA RENT</b><small>Акт выдачи байка</small></div></div>
     <div className="actTitle"><h1>Аренда</h1><span>{date(data.startDate)}</span></div>
     <div className="actHero"><b>{String(data.clientPhone || "—")}</b><strong>Байк: {String(data.assetName || "—")}</strong></div>
     <div className="actGrid">
-      <div><small>Дни</small><b>{days}</b></div><div><small>Дата</small><b>{date(data.startDate)}</b></div><div><small>Сдача</small><b>{date(data.endDate)}</b></div><div><small>Время</small><b>до 20:00</b></div>
+      <div><small>Дни</small><b>{days}</b></div><div><small>Дата</small><b>{date(data.startDate)}</b></div><div><small>Сдача</small><b>{date(data.endDate)}</b></div><div><small>Время</small><b>{String(data.startTime || "12:00")} — {String(data.endTime || "12:00")}</b></div>
       <div><small>Фото паспорта</small><b>{data.passportPhoto ? "+" : "—"}</b></div><div><small>Лимит километража</small><b>{data.mileageLimitPerDay ? `${data.mileageLimitPerDay} км/сутки` : "—"}</b></div><div><small>Держатель телефона</small><b>{String(data.phoneHolder || "—")}</b></div><div><small>Шлем</small><b>{String(data.helmetCount ?? "—")}</b></div>
       <div><small>Пробег</small><b>{String(data.mileageAtHandover ?? "—")}</b></div><div><small>Бензин</small><b>{String(data.fuelLevel || "—")}</b></div><div><small>Депозит</small><b>{money(data.depositAmount, String(data.depositCurrency || "₫"))}</b></div><div><small>Стоимость</small><b>{money(data.dailyRate)} / сутки</b></div>
     </div>

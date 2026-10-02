@@ -1,0 +1,2 @@
+ALTER TABLE "bookings" ADD COLUMN "start_time" TEXT NOT NULL DEFAULT '12:00';
+ALTER TABLE "bookings" ADD COLUMN "end_time" TEXT NOT NULL DEFAULT '12:00';
