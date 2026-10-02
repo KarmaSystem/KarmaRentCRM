@@ -33,3 +33,5 @@
 .modal input:focus,.modal select:focus,.modal textarea:focus{border-color:#08a7c6;box-shadow:0 0 0 3px #08a7c61c}.modal input,.modal select,.modal textarea{color:#102a43}.dark .modal input,.dark .modal select,.dark .modal textarea{background:#eef8fb;color:#102a43;border-color:#8cb9c5}.dark .modal label{color:#d6edf2}.dark .helpPopover{background:#edf8fa;color:#102a43}
 
 .extendBox{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}.extendBox label{margin-top:8px}.extendBox .secondaryButton{margin-bottom:0}
+
+.passwordField{display:flex;gap:6px;align-items:center}.passwordField input{min-width:0;flex:1}.showPasswordButton{border:1px solid #9fc4ce;background:#eaf7fa;color:#087f9a;border-radius:10px;padding:10px 8px;font-size:12px;white-space:nowrap}.showPasswordButton:hover{background:#d5f0f5}.dark .showPasswordButton{background:#dff5f8;color:#0b5365}
