@@ -12,7 +12,7 @@ const rentalDaysByTime = (startDate: Date, endDate: Date, startTime: string, end
 };
 
 export async function GET(request: NextRequest) {
-  try { const user = await getUser(request); const archived = request.nextUrl.searchParams.get("archived") === "true"; const bookings = await prisma.booking.findMany({ where: { userId: user.id, status: archived ? "CANCELLED" : { not: "CANCELLED" } }, include: { asset: true, payments: true }, orderBy: { startDate: "asc" } }); return Response.json(bookings); } catch (e) { return jsonError(e, 401); }
+  try { const user = await getUser(request); await prisma.booking.deleteMany({ where: { userId: user.id, status: "CANCELLED", archiveUntil: { lt: new Date() } } }); const archived = request.nextUrl.searchParams.get("archived") === "true"; const bookings = await prisma.booking.findMany({ where: { userId: user.id, status: archived ? "CANCELLED" : { not: "CANCELLED" } }, include: { asset: true, payments: true }, orderBy: { startDate: "asc" } }); return Response.json(bookings); } catch (e) { return jsonError(e, 401); }
 }
 export async function POST(request: NextRequest) {
   try {
