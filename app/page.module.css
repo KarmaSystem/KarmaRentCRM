@@ -166,3 +166,28 @@
 .reportDate{display:flex;flex-direction:column;gap:3px;font-size:10px;font-weight:800;color:#54717e;white-space:nowrap}
 .reportDate input{min-width:132px}
 @media(max-width:799px){.timelineHead .assetHead,.timelineRow .assetCell{width:148px!important;min-width:148px!important}.timelineRow .assetCell b{font-size:11px!important}.timelineRow .assetCell small{font-size:8px!important}.reportDate input{min-width:0;width:100%}}
+
+/* Mobile usability pass: narrow fixed label column, complete text, prominent fleet number. */
+@media(max-width:799px){
+  .timelineHead,.timelineRow{min-width:calc(78px + var(--day-width) * var(--calendar-days,31))!important}
+  .timelineHead .assetHead,.timelineRow .assetCell{width:78px!important;min-width:78px!important}
+  .timelineRow .assetCell{padding:6px 4px!important;align-items:center!important;overflow:visible!important}
+  .timelineRow .assetCell b{width:100%!important;max-width:100%!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;font-size:8px!important;line-height:1.05!important;text-align:left!important}
+  .timelineRow .assetCell .assetNumber{font-size:12px!important;line-height:1!important;white-space:nowrap!important;font-weight:950!important;display:inline-block!important}
+  .timelineRow .assetCell small{display:none!important}
+  .timelineHead .assetHead{font-size:8px!important;padding:3px!important}
+  .profileSectionHeader .headerActions{display:grid!important;grid-template-columns:1fr 1fr;gap:6px!important;width:100%!important;align-items:stretch!important}
+  .profileSectionHeader .headerActions .scaleControl{grid-column:1 / -1;display:flex!important;align-items:center;justify-content:space-between;width:100%!important}
+  .profileSectionHeader .headerActions .scaleControl select{flex:1;max-width:180px;margin-left:8px}
+  .profileSectionHeader .headerActions .secondaryButtonSmall,.profileSectionHeader .headerActions .primaryButton{width:100%!important;justify-content:center!important;margin:0!important}
+  .profileSearch{display:flex!important;justify-content:flex-start!important}
+  .profileSearch .searchBox{width:min(100%,270px)!important;max-width:270px!important}
+  .sectionActions .searchBox{flex:1 1 auto!important;min-width:0!important;max-width:calc(100% - 82px)!important}
+  .sectionActions .searchBox input{min-width:0!important;font-size:12px!important}
+  .sectionActions .primaryButton{flex:0 0 auto!important;padding-left:9px!important;padding-right:9px!important}
+}
+@media(min-width:800px){
+  .headerTools{display:flex!important;visibility:visible!important;opacity:1!important}
+  .notificationButton,.headerTools .iconButton{display:grid!important;visibility:visible!important}
+  .notificationCenter{display:block!important}
+}
