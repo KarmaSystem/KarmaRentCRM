@@ -217,3 +217,23 @@
 .profileSearch .searchBox{width:100%!important;max-width:420px!important}
 @media(min-width:800px){.headerTools .notificationButton,.headerTools .iconButton{width:38px!important;height:38px!important}.notificationCenter{top:62px!important}.profileSearch{width:min(100%,420px)!important}}
 @media(max-width:799px){.profileSearch{width:min(100%,270px)!important}.profileSearch .searchBox{width:100%!important;max-width:270px!important}.header{gap:8px!important}.header h1{font-size:18px!important}.headerTools{gap:4px!important}}
+
+/* Analytics mobile layout: fields never overlap and follow the reference card layout. */
+.dark .inlineSearch,.dark .reportDate input{background:#172b42!important;border-color:#3d6880!important;color:#f5fcff!important}
+.dark .inlineSearch::placeholder{color:#b4c8d8!important}
+.dark .reportDate{color:#c4dbe5!important}
+@media(max-width:799px){
+  .panelTitle{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;align-items:stretch!important}
+  .panelTitle>div:first-child{grid-column:1 / -1;min-width:0!important}
+  .panelTitle>div:first-child b{font-size:19px;line-height:1.08}
+  .panelTitle>div:first-child span{font-size:11px;line-height:1.25}
+  .panelTitle .inlineSearch{grid-column:1 / -1!important;order:initial!important;width:100%!important;min-width:0!important;height:42px!important;background:#172b42!important;color:#f5fcff!important;border-color:#3d6880!important;border-radius:12px!important;font-size:14px!important}
+  .panelTitle .reportDate{width:100%;min-width:0}
+  .panelTitle .reportDate input{width:100%!important;min-width:0!important;height:42px!important;background:#172b42!important;color:#f5fcff!important;border-color:#3d6880!important;border-radius:12px!important}
+  .panelTitle .reportButton{grid-column:1 / -1;justify-self:start;height:38px}
+  .headerTools .helpPopover{position:fixed!important;left:12px!important;right:12px!important;top:76px!important;bottom:auto!important;width:auto!important;max-width:none!important;background:#142238!important;color:#f5fcff!important;border:1px solid #4b96a4!important;border-radius:14px!important;padding:14px!important;z-index:2000!important;box-shadow:0 18px 45px #0008!important}
+  .headerTools .helpPopover>span{color:#f5fcff!important}
+}
+/* Rounded rental pill and a continuous today edge. */
+.bookingBar{border-radius:999px!important;padding-left:9px!important;padding-right:9px!important}
+.todayColumn{border-left-width:3px!important;border-right-width:3px!important}
