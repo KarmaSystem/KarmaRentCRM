@@ -297,3 +297,24 @@
 .themeHeaderLabel{display:none;font-size:11px;font-weight:850;white-space:nowrap}
 @media(min-width:800px){.headerTools .iconButton:has(.themeHeaderLabel){width:auto!important;min-width:72px!important;padding:0 10px!important;display:flex!important;align-items:center;justify-content:center;gap:5px}}
 @media(max-width:799px){.themeHeaderLabel{display:none!important}}
+
+/* Exact visual separation: only today's band is translucent; booking colors stay solid. */
+.bookingBar{opacity:1!important}
+.timelineRow .track .todayColumn{background:rgba(35,193,181,.13)!important;border-left:1px solid rgba(35,193,181,.28)!important;border-right:1px solid rgba(35,193,181,.28)!important;box-shadow:none!important}
+.dark .timelineRow .track .todayColumn{background:rgba(53,221,207,.16)!important;border-left-color:rgba(119,242,232,.38)!important;border-right-color:rgba(119,242,232,.38)!important;box-shadow:none!important}
+/* Desktop report controls have fixed columns so От/До cannot collide. */
+@media(min-width:800px){
+  .panelTitle{display:grid!important;grid-template-columns:minmax(260px,1fr) 180px 180px 92px 92px auto!important;gap:10px!important;align-items:center!important}
+  .panelTitle>div:first-child{grid-column:1;min-width:0!important}
+  .panelTitle .inlineSearchWrap{width:180px!important;min-width:0!important}
+  .panelTitle .reportDate{width:92px!important;min-width:0!important}
+  .panelTitle .reportDate input{width:92px!important;min-width:0!important}
+  .panelTitle .reportButton{white-space:nowrap!important}
+}
+/* A header help popover must stay behind an opened modal, never over it. */
+.headerTools .helpPopover{z-index:25!important}
+.modalBackdrop{z-index:30!important}
+.notificationCenter{z-index:1000!important}
+/* Keep the four header controls unmistakable on both themes. */
+.headerTools .helpButton,.headerTools .notificationButton,.headerTools .iconButton{background:#e8fbfd!important;color:#087f9a!important;border-color:#55b7c2!important}
+.dark .headerTools .helpButton,.dark .headerTools .notificationButton,.dark .headerTools .iconButton{background:#1f5263!important;color:#9cf1f4!important;border-color:#55a9b5!important}
