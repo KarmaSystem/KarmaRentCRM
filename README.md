@@ -47,3 +47,13 @@ npm run build
 ## Расширенные модули
 
 После миграций `0002_expanded_crm` и `0003_team_members` доступны партнёры, роли OWNER/ADMIN/MANAGER, JSON-права менеджеров, сортировка объектов, цвета статусов и публичные акты передачи. Для изменения схемы в Railway используется обычный redeploy: Dockerfile запускает `prisma migrate deploy` до старта Next.js.
+
+## Production Telegram Bot
+
+После добавления `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBAPP_URL`, `APP_URL`, `TELEGRAM_WEBHOOK_SECRET` и `CRON_SECRET` вызовите один раз:
+
+```bash
+curl -X POST https://YOUR-RAILWAY-DOMAIN/api/telegram/setup -H "Authorization: Bearer YOUR_CRON_SECRET"
+```
+
+Webhook будет установлен на `/api/telegram/webhook`. Команда `/start` создаёт профиль владельца/пользователя и отправляет кнопку открытия Mini App. Секреты не нужно отправлять в чат или хранить в GitHub.
