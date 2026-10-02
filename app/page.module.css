@@ -151,3 +151,18 @@
 .dark .notificationPrefsPanel{background:#18354a;border-color:#34566a;color:#d9f3f5}.dark .notificationPrefsPanel>b{color:#fff}.dark .notificationSave{background:#1aa9b8}.dark .notificationRow{border-color:#34566a}.dark .notificationRow>button:first-child span{color:#a8c7d0}
 .dark .modal input,.dark .modal select,.dark .modal textarea{background:#173149!important;border-color:#3b6178!important;color:#f2fbff!important}.dark .modal input::placeholder,.dark .modal textarea::placeholder{color:#a8c3ce!important}
 @media(max-width:799px){.modalBackdrop{align-items:flex-start;padding:8px 0}.modal{width:min(100%,560px);max-height:calc(100dvh - 16px);border-radius:16px;padding:13px 12px 18px}.modalHeader{margin-bottom:10px}.modalHeader h2{font-size:18px}.bookingForm .formGrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px}.bookingForm .formGrid>label input[type=date],.bookingForm .formGrid>label input[type=time]{font-size:12px;padding-left:7px;padding-right:5px}.bookingForm .bookingMoneyGrid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 66px!important}.bookingForm .bookingMoneyGrid input,.bookingForm .bookingMoneyGrid select{font-size:14px}.bookingForm .daysControl{grid-template-columns:minmax(0,1fr) 116px!important}.notificationCenter{max-width:calc(100vw - 16px);max-height:70dvh;overflow:auto}.notificationPrefsPanel{position:sticky;top:0;z-index:2}.videoFuture{font-size:9px}}
+
+/* Final readability pass: object labels stay readable at every calendar scale. */
+.timelineHead .assetHead,.timelineRow .assetCell{width:148px!important;min-width:148px!important}
+.timelineRow .assetCell b{display:block!important;max-width:100%!important;overflow:visible!important;text-overflow:clip!important;white-space:nowrap!important;font-size:12px!important;line-height:1.2!important;color:#173c4d!important}
+.timelineRow .assetCell small{font-size:9px!important;white-space:nowrap!important}
+.todayColumn{background:rgba(35,193,181,.16)!important;border-left:2px solid rgba(11,165,159,.62)!important;border-right:2px solid rgba(11,165,159,.62)!important}
+.dark .timelineRow .assetCell b{color:#f8fbff!important}
+.dark .todayColumn{background:rgba(53,221,207,.22)!important;border-left-color:#77f2e8!important;border-right-color:#77f2e8!important}
+.notificationSettingsLink{display:flex;align-items:center;gap:5px;width:100%;border:0;border-top:1px solid #d9edf0;background:transparent;color:#087f9a;font-size:12px;font-weight:800;padding:9px 3px 6px;cursor:pointer;text-align:left}
+.dark .notificationSettingsLink{border-top-color:#365875;color:#8af0f5}
+.notificationPrefsPanel{margin-top:2px;padding:8px;background:#f5fcfd;border:1px solid #dceff2;border-radius:9px}
+.dark .notificationPrefsPanel{background:#1b3045;border-color:#365875}
+.reportDate{display:flex;flex-direction:column;gap:3px;font-size:10px;font-weight:800;color:#54717e;white-space:nowrap}
+.reportDate input{min-width:132px}
+@media(max-width:799px){.timelineHead .assetHead,.timelineRow .assetCell{width:148px!important;min-width:148px!important}.timelineRow .assetCell b{font-size:11px!important}.timelineRow .assetCell small{font-size:8px!important}.reportDate input{min-width:0;width:100%}}

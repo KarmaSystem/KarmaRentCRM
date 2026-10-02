@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAccess, jsonError } from "@/lib/api";
-import { startOfMonth, endOfMonth } from "date-fns";
+import { endOfDay, endOfMonth, startOfMonth } from "date-fns";
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     if (member || !["OWNER", "ADMIN", "ACCOUNTANT"].includes(user.role)) throw new Error("Отчёты доступны владельцу, администратору и бухгалтеру");
     const url = new URL(request.url);
     const from = url.searchParams.get("from") ? new Date(url.searchParams.get("from")!) : startOfMonth(new Date());
-    const to = url.searchParams.get("to") ? new Date(url.searchParams.get("to")!) : endOfMonth(new Date());
+    const to = url.searchParams.get("to") ? endOfDay(new Date(url.searchParams.get("to")!)) : endOfMonth(new Date());
     const partnerQuery = url.searchParams.get("partner")?.trim() || undefined;
     const bookingScope = { userId: user.id, startDate: { lte: to }, endDate: { gte: from }, status: { not: "CANCELLED" as const }, ...(partnerQuery ? { partner: { name: { contains: partnerQuery, mode: "insensitive" as const } } } : {}) };
     const [payments, expenses, bookings] = await Promise.all([
