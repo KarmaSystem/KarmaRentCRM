@@ -267,3 +267,18 @@
   .panelTitle .inlineSearchWrap{grid-column:1 / -1!important;width:100%!important;height:42px!important}
   .panelTitle .inlineSearchWrap .inlineSearch{font-size:14px!important}
 }
+
+/* Notifications are explicit in the desktop header, not hidden behind an icon. */
+.notificationButton{display:flex!important;align-items:center;justify-content:center;gap:6px!important;position:relative}
+.notificationButton em{font-style:normal;font-size:11px;font-weight:850;white-space:nowrap}
+.notificationButton .notificationBadge{position:absolute;right:-5px;top:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:#df6672;color:#fff;font-size:9px;font-weight:900;display:grid;place-items:center}
+@media(min-width:800px){.headerTools .notificationButton{width:auto!important;min-width:132px!important;padding:0 12px!important}.headerTools .notificationButton em{display:inline!important}}
+@media(max-width:799px){.notificationButton em{display:none!important}.headerTools .notificationButton{width:34px!important;padding:0!important}}
+/* A translucent rounded booking pill; the grid cells, not the pill, control the calendar geometry. */
+.bookingBar{opacity:.68!important}
+/* Mobile day cells remain square at every calendar scale. */
+@media(max-width:799px){
+  .timelineRow,.timelineRow .track{height:var(--day-width)!important;min-height:var(--day-width)!important}
+  .timelineRow .gridCell{height:var(--day-width)!important}
+  .timelineRow .bookingBar{top:calc((var(--day-width) - 30px) / 2)!important;height:30px!important;min-height:30px!important;line-height:30px!important}
+}
