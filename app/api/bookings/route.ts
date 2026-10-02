@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     const totalPrice = rentalDays * Number(input.dailyRate);
     const booking = await prisma.$transaction(async tx => {
       const created = await tx.booking.create({ data: { userId: user.id, assetId: input.assetId, clientName: input.clientName, clientPhone: input.clientPhone, startDate: input.startDate, endDate: input.endDate, startTime: input.startTime, endTime: input.endTime, dailyRate: input.dailyRate, totalPrice, paidAmount: input.paidAmount, depositAmount: input.depositAmount, depositCurrency: input.depositCurrency, passportPhoto: input.passportPhoto, mileageLimitPerDay: input.mileageLimitPerDay ?? null, phoneHolder: input.phoneHolder || null, helmetCount: input.helmetCount ?? null, mileageAtHandover: input.mileageAtHandover ?? null, fuelLevel: input.fuelLevel || null, notes: input.notes, status: input.maintenanceBlock ? "TECHNICAL" : input.status } });
+      if (Number(input.paidAmount) > 0) await tx.payment.create({ data: { userId: user.id, bookingId: created.id, amount: Number(input.paidAmount), paymentType: "RENTAL", paymentMethod: "CASH" } });
       if (input.maintenanceBlock) await tx.assetBlock.create({ data: { userId: user.id, assetId: input.assetId, startDate: input.startDate, endDate: input.endDate, reason: input.notes || "Техническая блокировка" } });
       return created;
     });
