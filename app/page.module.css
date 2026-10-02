@@ -31,3 +31,5 @@
 .deleteButton{width:100%;margin:10px 0;border:1px solid #e9a3aa;background:#fff1f2;color:#b63e4d;border-radius:10px;padding:10px;font-weight:800}.daysControl select{font-weight:800;color:#087f9a;background:#eefafd}.dark .deleteButton{background:#44262e;color:#ffadb5;border-color:#8d4652}.dark .detailBox{background:#dff4f8;color:#102a43}.dark .detailBox b{color:#102a43}
 
 .modal input:focus,.modal select:focus,.modal textarea:focus{border-color:#08a7c6;box-shadow:0 0 0 3px #08a7c61c}.modal input,.modal select,.modal textarea{color:#102a43}.dark .modal input,.dark .modal select,.dark .modal textarea{background:#eef8fb;color:#102a43;border-color:#8cb9c5}.dark .modal label{color:#d6edf2}.dark .helpPopover{background:#edf8fa;color:#102a43}
+
+.extendBox{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}.extendBox label{margin-top:8px}.extendBox .secondaryButton{margin-bottom:0}
