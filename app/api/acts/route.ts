@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       notes: booking.notes, partnerName: String(partnerName || "").trim() || null
     };
     const act = await prisma.handoverAct.upsert({ where: { bookingId: booking.id }, update: { payload }, create: { userId: user.id, bookingId: booking.id, payload } });
-    const baseUrl = process.env.APP_URL || process.env.TELEGRAM_WEBAPP_URL || request.nextUrl.origin;
+    const configuredBaseUrl = process.env.APP_URL || process.env.TELEGRAM_WEBAPP_URL || request.nextUrl.origin; const baseUrl = /^https?:\/\//i.test(configuredBaseUrl) ? configuredBaseUrl : `https://${configuredBaseUrl}`;
     return Response.json({ id: act.id, url: `${baseUrl.replace(/\/$/, "")}/acts/${act.publicToken}`, token: act.publicToken });
   } catch (e) { return jsonError(e); }
 }
