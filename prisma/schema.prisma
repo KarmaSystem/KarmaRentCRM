@@ -157,27 +157,34 @@ model Partner {
 }
 
 model Booking {
-  id            String        @id @default(cuid())
-  userId        String        @map("user_id")
-  assetId       String        @map("asset_id")
-  partnerId     String?       @map("partner_id")
-  clientName    String        @map("client_name")
-  clientPhone   String        @map("client_phone")
-  startDate     DateTime      @map("start_date")
-  endDate       DateTime      @map("end_date")
-  dailyRate     Decimal       @map("daily_rate") @db.Decimal(12, 2)
-  totalPrice    Decimal       @map("total_price") @db.Decimal(12, 2)
-  paidAmount    Decimal       @default(0) @map("paid_amount") @db.Decimal(12, 2)
-  depositAmount Decimal       @default(0) @map("deposit_amount") @db.Decimal(12, 2)
-  notes         String?
-  status        BookingStatus @default(PENDING)
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  asset         Asset         @relation(fields: [assetId], references: [id], onDelete: Restrict)
-  partner       Partner?      @relation(fields: [partnerId], references: [id], onDelete: SetNull)
-  payments      Payment[]
-  act           HandoverAct?
+  id                 String        @id @default(cuid())
+  userId             String        @map("user_id")
+  assetId            String        @map("asset_id")
+  partnerId          String?       @map("partner_id")
+  clientName         String        @map("client_name")
+  clientPhone        String        @map("client_phone")
+  startDate          DateTime      @map("start_date")
+  endDate            DateTime      @map("end_date")
+  dailyRate          Decimal       @map("daily_rate") @db.Decimal(12, 2)
+  totalPrice         Decimal       @map("total_price") @db.Decimal(12, 2)
+  paidAmount         Decimal       @default(0) @map("paid_amount") @db.Decimal(12, 2)
+  depositAmount      Decimal       @default(0) @map("deposit_amount") @db.Decimal(12, 2)
+  depositCurrency    String        @default("₫") @map("deposit_currency")
+  passportPhoto      Boolean       @default(false) @map("passport_photo")
+  mileageLimitPerDay Int?          @map("mileage_limit_per_day")
+  phoneHolder        String?       @map("phone_holder")
+  helmetCount        Int?          @map("helmet_count")
+  mileageAtHandover  Int?          @map("mileage_at_handover")
+  fuelLevel          String?       @map("fuel_level")
+  notes              String?
+  status             BookingStatus @default(PENDING)
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset              Asset         @relation(fields: [assetId], references: [id], onDelete: Restrict)
+  partner            Partner?      @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+  payments           Payment[]
+  act                HandoverAct?
 
   @@index([userId, startDate, endDate])
   @@index([assetId, startDate, endDate])

@@ -1,3 +1,29 @@
 import ActActions from "./ActActions";
 import { prisma } from "@/lib/prisma";
-export default async function HandoverActPage({ params }: { params: Promise<{ token: string }> }) { const { token } = await params; const act = await prisma.handoverAct.findUnique({ where: { publicToken: token }, include: { booking: { include: { asset: true } } } }); if (!act) return <main style={{ padding: 32, fontFamily: "sans-serif" }}><h1>Акт не найден</h1></main>; const data = act.payload as Record<string, string>; return <main style={{ maxWidth: 680, margin: "40px auto", padding: 24, fontFamily: "sans-serif", color: "#17394d" }}><h1>Акт передачи</h1><p>Rental Planner</p><hr /><h2>{data.assetName}</h2><p><b>Клиент:</b> {data.clientName}</p><p><b>Телефон:</b> {data.clientPhone}</p><p><b>Период:</b> {new Date(data.startDate).toLocaleDateString("ru-RU")} — {new Date(data.endDate).toLocaleDateString("ru-RU")}</p><p><b>Стоимость:</b> {Number(data.totalPrice).toLocaleString("vi-VN")} ₫</p><p><b>Залог:</b> {Number(data.depositAmount).toLocaleString("vi-VN")} ₫</p><ActActions /><p style={{ marginTop: 48, color: "#78909c" }}>Документ сформирован системой Rental Planner.</p></main>; }
+
+const money = (value: unknown, currency = "₫") => `${Number(value || 0).toLocaleString("vi-VN")} ${currency}`;
+const date = (value: unknown) => value ? new Date(String(value)).toLocaleDateString("ru-RU") : "—";
+
+export default async function HandoverActPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
+  const act = await prisma.handoverAct.findUnique({ where: { publicToken: token }, include: { booking: { include: { asset: true } } } });
+  if (!act) return <main className="actPage"><section className="actCard"><h1>Акт не найден</h1></section></main>;
+  const data = act.payload as Record<string, unknown>;
+  const start = new Date(String(data.startDate));
+  const end = new Date(String(data.endDate));
+  const days = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000));
+  return <main className="actPage"><section className="actCard">
+    <div className="actBrand"><div className="actLogo">KR</div><div><b>KARMA RENT</b><small>Акт выдачи байка</small></div></div>
+    <div className="actTitle"><h1>Аренда</h1><span>{date(data.startDate)}</span></div>
+    <div className="actHero"><b>{String(data.clientPhone || "—")}</b><strong>Байк: {String(data.assetName || "—")}</strong></div>
+    <div className="actGrid">
+      <div><small>Дни</small><b>{days}</b></div><div><small>Дата</small><b>{date(data.startDate)}</b></div><div><small>Сдача</small><b>{date(data.endDate)}</b></div><div><small>Время</small><b>до 20:00</b></div>
+      <div><small>Фото паспорта</small><b>{data.passportPhoto ? "+" : "—"}</b></div><div><small>Лимит километража</small><b>{data.mileageLimitPerDay ? `${data.mileageLimitPerDay} км/сутки` : "—"}</b></div><div><small>Держатель телефона</small><b>{String(data.phoneHolder || "—")}</b></div><div><small>Шлем</small><b>{String(data.helmetCount ?? "—")}</b></div>
+      <div><small>Пробег</small><b>{String(data.mileageAtHandover ?? "—")}</b></div><div><small>Бензин</small><b>{String(data.fuelLevel || "—")}</b></div><div><small>Депозит</small><b>{money(data.depositAmount, String(data.depositCurrency || "₫"))}</b></div><div><small>Стоимость</small><b>{money(data.dailyRate)} / сутки</b></div>
+    </div>
+    <div className="actTotal"><span>Итого к оплате</span><strong>{money(data.totalPrice)}</strong></div>
+    {data.notes ? <div className="actNotes"><small>Комментарий</small><p>{String(data.notes)}</p></div> : null}
+    <ActActions />
+    <p className="actFoot">Проверьте данные при получении и возврате транспорта.</p>
+  </section></main>;
+}
