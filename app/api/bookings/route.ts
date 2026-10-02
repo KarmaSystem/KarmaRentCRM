@@ -12,7 +12,7 @@ const rentalDaysByTime = (startDate: Date, endDate: Date, startTime: string, end
 };
 
 export async function GET(request: NextRequest) {
-  try { const user = await getUser(request); const bookings = await prisma.booking.findMany({ where: { userId: user.id }, include: { asset: true, payments: true }, orderBy: { startDate: "asc" } }); return Response.json(bookings); } catch (e) { return jsonError(e, 401); }
+  try { const user = await getUser(request); const bookings = await prisma.booking.findMany({ where: { userId: user.id, status: { not: "CANCELLED" } }, include: { asset: true, payments: true }, orderBy: { startDate: "asc" } }); return Response.json(bookings); } catch (e) { return jsonError(e, 401); }
 }
 export async function POST(request: NextRequest) {
   try {
@@ -54,9 +54,27 @@ export async function PATCH(request: NextRequest) {
     const after = { startDate: startDate.toISOString(), endDate: endDate.toISOString(), startTime: nextStartTime, endTime: nextEndTime, dailyRate: String(dailyRate), totalPrice: String(days * dailyRate) };
     const updated = await prisma.$transaction(async tx => {
       const result = await tx.booking.update({ where: { id }, data: { startDate, endDate, startTime: nextStartTime, endTime: nextEndTime, dailyRate, totalPrice: days * dailyRate } });
+      const existingAct = await tx.handoverAct.findUnique({ where: { bookingId: id } });
+      if (existingAct) {
+        const oldPayload = (existingAct.payload && typeof existingAct.payload === "object") ? existingAct.payload as Record<string, unknown> : {};
+        await tx.handoverAct.update({ where: { bookingId: id }, data: { payload: { ...oldPayload, startDate: startDate.toISOString(), endDate: endDate.toISOString(), startTime: nextStartTime, endTime: nextEndTime, dailyRate: String(dailyRate), totalPrice: String(days * dailyRate) } } });
+      }
       await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: "UPDATE", reason: String(body.reason || "Без комментария"), before, after } });
       return result;
     });
     return Response.json(updated);
+  } catch (e) { return jsonError(e); }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { user, member } = await getAccess(request);
+    const id = String(request.nextUrl.searchParams.get("id") || (await request.json().catch(() => ({}))).id);
+    const current = await prisma.booking.findFirst({ where: { id, userId: user.id } });
+    if (!current) throw new Error("Бронь не найдена");
+    const archiveUntil = new Date(Date.now() + 14 * 86400000);
+    const updated = await prisma.booking.update({ where: { id }, data: { status: "CANCELLED", archiveUntil } });
+    await prisma.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: "ARCHIVE", reason: "Бронь удалена в архив на 14 дней", before: { status: current.status }, after: { status: "CANCELLED", archiveUntil: archiveUntil.toISOString() } } });
+    return Response.json({ ok: true, archiveUntil, booking: updated });
   } catch (e) { return jsonError(e); }
 }

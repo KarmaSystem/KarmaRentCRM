@@ -125,6 +125,7 @@ model Asset {
   serviceNote        String?       @map("service_note")
   createdAt          DateTime      @default(now()) @map("created_at")
   updatedAt          DateTime      @updatedAt @map("updated_at")
+  archiveUntil       DateTime?     @map("archive_until")
   user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   bookings           Booking[]
   expenses           Expense[]
@@ -183,6 +184,7 @@ model Booking {
   status             BookingStatus @default(PENDING)
   createdAt          DateTime      @default(now()) @map("created_at")
   updatedAt          DateTime      @updatedAt @map("updated_at")
+  archiveUntil       DateTime?     @map("archive_until")
   user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   asset              Asset         @relation(fields: [assetId], references: [id], onDelete: Restrict)
   partner            Partner?      @relation(fields: [partnerId], references: [id], onDelete: SetNull)
