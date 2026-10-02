@@ -282,3 +282,15 @@
   .timelineRow .gridCell{height:var(--day-width)!important}
   .timelineRow .bookingBar{top:calc((var(--day-width) - 30px) / 2)!important;height:30px!important;min-height:30px!important;line-height:30px!important}
 }
+
+/* Theme is available in the profile cabinet as well as the global header. */
+.themeProfileButton{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:1px solid #b9dce3;background:#eefafd;color:#087f9a;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.dark .themeProfileButton{background:#173d51;color:#9cf1f4;border-color:#4c9eaa}
+/* Restore the stable mobile calendar row geometry; only the pill opacity remains changed. */
+@media(max-width:799px){
+  .timelineRow,.timelineRow .track{height:58px!important;min-height:58px!important}
+  .timelineRow .gridCell{height:58px!important}
+  .timelineRow .bookingBar{top:14px!important;height:30px!important;min-height:30px!important;line-height:30px!important}
+  .profileSectionHeader .headerActions .themeProfileButton{grid-column:1 / -1;width:100%!important}
+}
+@media(min-width:800px){.profileSectionHeader .themeProfileButton{display:inline-flex!important}}
