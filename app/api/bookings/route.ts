@@ -4,6 +4,13 @@ import { getAccess, getUser, jsonError } from "@/lib/api";
 import { calculateTotal, assertValidPhone } from "@/lib/rental";
 import { bookingSchema } from "@/lib/validation";
 
+const rentalDaysByTime = (startDate: Date, endDate: Date, startTime: string, endTime: string) => {
+  const start = new Date(`${startDate.toISOString().slice(0, 10)}T${startTime}`);
+  const end = new Date(`${endDate.toISOString().slice(0, 10)}T${endTime}`);
+  if (end <= start) throw new Error("Время возврата должно быть позже времени выдачи");
+  return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / 86400000));
+};
+
 export async function GET(request: NextRequest) {
   try { const user = await getUser(request); const bookings = await prisma.booking.findMany({ where: { userId: user.id }, include: { asset: true, payments: true }, orderBy: { startDate: "asc" } }); return Response.json(bookings); } catch (e) { return jsonError(e, 401); }
 }
@@ -12,11 +19,11 @@ export async function POST(request: NextRequest) {
     const user = await getUser(request); const input = bookingSchema.parse(await request.json()); assertValidPhone(input.clientPhone);
     const asset = await prisma.asset.findFirst({ where: { id: input.assetId, userId: user.id, status: { not: "ARCHIVED" } } });
     if (!asset) throw new Error("Объект не найден или архивирован");
-    if (input.endDate <= input.startDate) throw new Error("Дата окончания должна быть позже даты начала");
+    const rentalDays = rentalDaysByTime(input.startDate, input.endDate, input.startTime, input.endTime);
     const overlap = await prisma.booking.findFirst({ where: { userId: user.id, assetId: input.assetId, status: { notIn: ["CANCELLED", "COMPLETED"] }, startDate: { lt: input.endDate }, endDate: { gt: input.startDate } } });
     const block = await prisma.assetBlock.findFirst({ where: { userId: user.id, assetId: input.assetId, startDate: { lt: input.endDate }, endDate: { gt: input.startDate } } });
     if (overlap || block) throw new Error("Период пересекается с существующей бронью или блокировкой");
-    const totalPrice = input.totalPrice ?? calculateTotal(input.startDate, input.endDate, input.dailyRate);
+    const totalPrice = rentalDays * Number(input.dailyRate);
     const booking = await prisma.$transaction(async tx => {
       const created = await tx.booking.create({ data: { userId: user.id, assetId: input.assetId, clientName: input.clientName, clientPhone: input.clientPhone, startDate: input.startDate, endDate: input.endDate, startTime: input.startTime, endTime: input.endTime, dailyRate: input.dailyRate, totalPrice, paidAmount: input.paidAmount, depositAmount: input.depositAmount, depositCurrency: input.depositCurrency, passportPhoto: input.passportPhoto, mileageLimitPerDay: input.mileageLimitPerDay ?? null, phoneHolder: input.phoneHolder || null, helmetCount: input.helmetCount ?? null, mileageAtHandover: input.mileageAtHandover ?? null, fuelLevel: input.fuelLevel || null, notes: input.notes, status: input.maintenanceBlock ? "TECHNICAL" : input.status } });
       if (input.maintenanceBlock) await tx.assetBlock.create({ data: { userId: user.id, assetId: input.assetId, startDate: input.startDate, endDate: input.endDate, reason: input.notes || "Техническая блокировка" } });
@@ -36,10 +43,11 @@ export async function PATCH(request: NextRequest) {
     const startDate = body.startDate ? new Date(body.startDate) : current.startDate;
     const endDate = body.endDate ? new Date(body.endDate) : current.endDate;
     const dailyRate = body.dailyRate != null ? Number(body.dailyRate) : Number(current.dailyRate);
-    if (endDate <= startDate) throw new Error("Дата окончания должна быть позже даты начала");
+    const nextStartTimeForCheck = String(body.startTime || current.startTime);
+    const nextEndTimeForCheck = String(body.endTime || current.endTime);
+    const days = rentalDaysByTime(startDate, endDate, nextStartTimeForCheck, nextEndTimeForCheck);
     const overlap = await prisma.booking.findFirst({ where: { userId: user.id, assetId: current.assetId, id: { not: id }, status: { notIn: ["CANCELLED", "COMPLETED"] }, startDate: { lt: endDate }, endDate: { gt: startDate } } });
     if (overlap) throw new Error("Новый период пересекается с другой бронью");
-    const days = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / 86400000));
     const nextStartTime = String(body.startTime || current.startTime);
     const nextEndTime = String(body.endTime || current.endTime);
     const before = { startDate: current.startDate.toISOString(), endDate: current.endDate.toISOString(), startTime: current.startTime, endTime: current.endTime, dailyRate: String(current.dailyRate), totalPrice: String(current.totalPrice) };
