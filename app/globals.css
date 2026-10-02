@@ -7,3 +7,5 @@
 @media(max-width:520px){.actPage{padding:12px 8px}.actCard{padding:18px;border-radius:16px}.actGrid{grid-template-columns:1fr 1fr}.actTitle h1{font-size:25px}.actHero b{font-size:16px}}
 
 @media (max-width:799px){input,select,textarea{font-size:16px!important}}
+.actConditions{margin-top:18px;padding:16px;border:1px solid #d8e6ea;border-radius:12px;background:#f8fcfd}.actConditionsHead{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:10px;color:#163d4b}.actConditionsHead small{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#5d7d88}.actConditions pre{margin:0;white-space:pre-wrap;font:inherit;font-size:12px;line-height:1.55;color:#173c4d}.actConditions+*{margin-top:14px}
+@media(max-width:600px){.actConditions{padding:12px}.actConditions pre{font-size:11px;line-height:1.45}}

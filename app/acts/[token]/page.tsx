@@ -23,6 +23,7 @@ export default async function HandoverActPage({ params }: { params: Promise<{ to
     </div>
     <div className="actTotal"><span>Итого к оплате</span><strong>{money(data.totalPrice)}</strong></div>
     {data.notes ? <div className="actNotes"><small>Комментарий</small><p>{String(data.notes)}</p></div> : null}
+    <div className="actConditions"><div className="actConditionsHead"><small>Условия аренды</small><b>{String(data.assetName || "Байк")}</b></div><pre>{String(data.rentalConditions || "Условия не указаны")}</pre></div>
     <ActActions />
     <p className="actFoot">Проверьте данные при получении и возврате транспорта.</p>
   </section></main>;

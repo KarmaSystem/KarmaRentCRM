@@ -108,29 +108,33 @@ model User {
 }
 
 model Asset {
-  id                 String        @id @default(cuid())
-  userId             String        @map("user_id")
-  name               String
-  category           AssetCategory
-  brand              String?
-  model              String?
-  registrationNumber String?       @map("registration_number")
-  dailyRate          Decimal       @map("daily_rate") @db.Decimal(12, 2)
-  description        String?
-  imageUrl           String?       @map("image_url")
-  status             AssetStatus   @default(AVAILABLE)
-  sortOrder          Int           @default(0) @map("sort_order")
-  statusColor        String        @default("#50b8ed") @map("status_color")
-  currentMileage     Int?          @map("current_mileage")
-  serviceMileage     Int?          @map("service_mileage")
-  serviceNote        String?       @map("service_note")
-  createdAt          DateTime      @default(now()) @map("created_at")
-  updatedAt          DateTime      @updatedAt @map("updated_at")
-  archiveUntil       DateTime?     @map("archive_until")
-  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bookings           Booking[]
-  expenses           Expense[]
-  blocks             AssetBlock[]
+  id                     String        @id @default(cuid())
+  userId                 String        @map("user_id")
+  name                   String
+  category               AssetCategory
+  brand                  String?
+  model                  String?
+  registrationNumber     String?       @map("registration_number")
+  dailyRate              Decimal       @map("daily_rate") @db.Decimal(12, 2)
+  description            String?
+  imageUrl               String?       @map("image_url")
+  status                 AssetStatus   @default(AVAILABLE)
+  sortOrder              Int           @default(0) @map("sort_order")
+  statusColor            String        @default("#50b8ed") @map("status_color")
+  currentMileage         Int?          @map("current_mileage")
+  serviceMileage         Int?          @map("service_mileage")
+  serviceNote            String?       @map("service_note")
+  oilChangeMileage       Int?          @map("oil_change_mileage")
+  variatorServiceMileage Int?          @map("variator_service_mileage")
+  lastServiceDate        DateTime?     @map("last_service_date")
+  rentalConditions       String?       @map("rental_conditions")
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @updatedAt @map("updated_at")
+  archiveUntil           DateTime?     @map("archive_until")
+  user                   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings               Booking[]
+  expenses               Expense[]
+  blocks                 AssetBlock[]
 
   @@index([userId, sortOrder])
   @@index([userId, status])
