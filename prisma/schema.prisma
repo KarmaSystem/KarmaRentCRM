@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AssetCategory {
+  MOTORCYCLE
+  SCOOTER
+  CAR
+  REAL_ESTATE
+  OTHER
+}
+enum AssetStatus {
+  AVAILABLE
+  RENTED
+  MAINTENANCE
+  UNAVAILABLE
+  ARCHIVED
+}
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  TECHNICAL
+}
+enum PaymentType {
+  RENTAL
+  DEPOSIT
+  DEPOSIT_RETURN
+  REFUND
+  EXPENSE
+}
+enum PaymentMethod {
+  CASH
+  CARD
+  TRANSFER
+  OTHER
+}
+enum ExpenseCategory {
+  MAINTENANCE
+  REPAIR
+  WASH
+  FUEL
+  INSURANCE
+  PARTS
+  TAX
+  OTHER
+}
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model User {
+  id          String   @id @default(cuid())
+  telegramId  BigInt   @unique @map("telegram_id")
+  companyName String?  @map("company_name")
+  timezone    String   @default("Asia/Bangkok")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  assets      Asset[]
+  bookings    Booking[]
+  payments    Payment[]
+  expenses    Expense[]
+  blocks      AssetBlock[]
+  notifications Notification[]
+  @@map("users")
+}
+
+model Asset {
+  id                 String        @id @default(cuid())
+  userId             String        @map("user_id")
+  name               String
+  category           AssetCategory
+  brand              String?
+  model              String?
+  registrationNumber String?       @map("registration_number")
+  dailyRate          Decimal       @db.Decimal(12, 2) @map("daily_rate")
+  description        String?
+  imageUrl           String?       @map("image_url")
+  status             AssetStatus   @default(AVAILABLE)
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings           Booking[]
+  expenses           Expense[]
+  blocks             AssetBlock[]
+  @@index([userId, status])
+  @@index([userId, category])
+  @@map("assets")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  userId        String        @map("user_id")
+  assetId       String        @map("asset_id")
+  clientName    String        @map("client_name")
+  clientPhone   String        @map("client_phone")
+  startDate     DateTime      @map("start_date")
+  endDate       DateTime      @map("end_date")
+  dailyRate     Decimal       @db.Decimal(12, 2) @map("daily_rate")
+  totalPrice    Decimal       @db.Decimal(12, 2) @map("total_price")
+  paidAmount    Decimal       @default(0) @db.Decimal(12, 2) @map("paid_amount")
+  depositAmount Decimal       @default(0) @db.Decimal(12, 2) @map("deposit_amount")
+  notes         String?
+  status        BookingStatus @default(PENDING)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset         Asset         @relation(fields: [assetId], references: [id], onDelete: Restrict)
+  payments      Payment[]
+  @@index([userId, startDate, endDate])
+  @@index([assetId, startDate, endDate])
+  @@index([userId, status])
+  @@map("bookings")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  userId        String        @map("user_id")
+  bookingId     String?       @map("booking_id")
+  amount        Decimal       @db.Decimal(12, 2)
+  paymentType   PaymentType   @map("payment_type")
+  paymentMethod PaymentMethod @default(CASH) @map("payment_method")
+  paymentDate   DateTime      @default(now()) @map("payment_date")
+  comment       String?
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking       Booking?      @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  @@index([userId, paymentDate])
+  @@map("payments")
+}
+
+model Expense {
+  id        String          @id @default(cuid())
+  userId    String          @map("user_id")
+  assetId   String?         @map("asset_id")
+  amount    Decimal         @db.Decimal(12, 2)
+  category  ExpenseCategory
+  date      DateTime        @default(now())
+  comment   String?
+  createdAt DateTime        @default(now()) @map("created_at")
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset     Asset?           @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  @@index([userId, date])
+  @@index([userId, category])
+  @@map("expenses")
+}
+
+model AssetBlock {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  assetId   String   @map("asset_id")
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  reason    String
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  @@index([assetId, startDate, endDate])
+  @@map("asset_blocks")
+}
+
+model Notification {
+  id          String             @id @default(cuid())
+  userId      String             @map("user_id")
+  type        String
+  referenceId String?            @map("reference_id")
+  scheduledAt DateTime           @map("scheduled_at")
+  sentAt      DateTime?          @map("sent_at")
+  status      NotificationStatus @default(PENDING)
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, type, referenceId, scheduledAt])
+  @@index([status, scheduledAt])
+  @@map("notifications")
+}

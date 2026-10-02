@@ -1,0 +1,4 @@
+import { PrismaClient, AssetCategory } from "@prisma/client";
+const prisma = new PrismaClient();
+async function main() { const user = await prisma.user.upsert({ where: { telegramId: BigInt(0) }, update: {}, create: { telegramId: BigInt(0), companyName: "Demo Rental" } }); const assets = [{ name: "SYM Elite 50cc", category: AssetCategory.SCOOTER, dailyRate: 18 }, { name: "Honda PCX 125cc", category: AssetCategory.SCOOTER, dailyRate: 24 }, { name: "Yamaha NMAX 155cc", category: AssetCategory.MOTORCYCLE, dailyRate: 28 }, { name: "Yamaha NVX 125cc", category: AssetCategory.MOTORCYCLE, dailyRate: 25 }, { name: "Honda ADV", category: AssetCategory.MOTORCYCLE, dailyRate: 32 }]; for (const asset of assets) await prisma.asset.create({ data: { ...asset, dailyRate: asset.dailyRate, userId: user.id } }); }
+main().finally(() => prisma.$disconnect());

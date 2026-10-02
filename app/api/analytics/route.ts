@@ -1,0 +1,5 @@
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getUser, jsonError } from "@/lib/api";
+
+export async function GET(request: NextRequest) { try { const user = await getUser(request); const [bookings, payments, expenses] = await Promise.all([prisma.booking.findMany({ where: { userId: user.id }, include: { asset: true } }), prisma.payment.findMany({ where: { userId: user.id } }), prisma.expense.findMany({ where: { userId: user.id } })]); const money = (v: unknown) => Number(v); const revenue = payments.filter(p => ["RENTAL"].includes(p.paymentType)).reduce((s, p) => s + money(p.amount), 0); const deposits = payments.filter(p => ["DEPOSIT"].includes(p.paymentType)).reduce((s, p) => s + money(p.amount), 0); const expensesTotal = expenses.reduce((s, e) => s + money(e.amount), 0); const expected = bookings.reduce((s, b) => s + Math.max(0, money(b.totalPrice) - money(b.paidAmount)), 0); return Response.json({ revenue, deposits, expenses: expensesTotal, net: revenue - expensesTotal, expected, bookings: bookings.length }); } catch (e) { return jsonError(e, 401); } }

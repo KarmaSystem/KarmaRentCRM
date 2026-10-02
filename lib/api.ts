@@ -1,0 +1,17 @@
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { verifyTelegramInitData } from "@/lib/telegram";
+
+export async function getUser(request: NextRequest) {
+  const initData = request.headers.get("x-telegram-init-data") || request.cookies.get("telegram_init_data")?.value;
+  if (process.env.DEMO_MODE === "true" && !initData) {
+    return prisma.user.upsert({ where: { telegramId: BigInt(0) }, update: {}, create: { telegramId: BigInt(0), companyName: "Demo Rental" } });
+  }
+  if (!initData) throw new Error("Требуется Telegram авторизация");
+  const tgUser = verifyTelegramInitData(initData);
+  return prisma.user.upsert({ where: { telegramId: BigInt(tgUser.id) }, update: {}, create: { telegramId: BigInt(tgUser.id), companyName: tgUser.first_name ? `${tgUser.first_name}'s Rental` : "Rental Planner" } });
+}
+
+export function jsonError(error: unknown, status = 400) {
+  return Response.json({ error: error instanceof Error ? error.message : "Внутренняя ошибка" }, { status });
+}
