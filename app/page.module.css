@@ -35,3 +35,5 @@
 .extendBox{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}.extendBox label{margin-top:8px}.extendBox .secondaryButton{margin-bottom:0}
 
 .passwordField{display:flex;gap:6px;align-items:center}.passwordField input{min-width:0;flex:1}.showPasswordButton{border:1px solid #9fc4ce;background:#eaf7fa;color:#087f9a;border-radius:10px;padding:10px 8px;font-size:12px;white-space:nowrap}.showPasswordButton:hover{background:#d5f0f5}.dark .showPasswordButton{background:#dff5f8;color:#0b5365}
+
+.profileSearch{margin-bottom:12px}.profileGroup{max-height:420px;overflow:auto}.profileGroupTitle{position:sticky;top:-14px;background:inherit;z-index:2;padding-bottom:8px}.profileGroupTitle b{display:flex;align-items:center;gap:5px}
