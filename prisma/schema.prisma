@@ -112,6 +112,8 @@ model Asset {
   status             AssetStatus   @default(AVAILABLE)
   sortOrder          Int           @default(0) @map("sort_order")
   statusColor        String        @default("#50b8ed") @map("status_color")
+  nextServiceDate    DateTime?     @map("next_service_date")
+  serviceNote        String?       @map("service_note")
   createdAt          DateTime      @default(now()) @map("created_at")
   updatedAt          DateTime      @updatedAt @map("updated_at")
   user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -121,6 +123,7 @@ model Asset {
 
   @@index([userId, sortOrder])
   @@index([userId, status])
+  @@index([userId, nextServiceDate])
   @@index([userId, category])
   @@map("assets")
 }
