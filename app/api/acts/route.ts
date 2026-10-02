@@ -5,7 +5,7 @@ import { getUser, jsonError } from "@/lib/api";
 export async function POST(request: NextRequest) {
   try {
     const user = await getUser(request);
-    const { bookingId } = await request.json();
+    const { bookingId, partnerName } = await request.json();
     const booking = await prisma.booking.findFirst({ where: { id: String(bookingId), userId: user.id }, include: { asset: true } });
     if (!booking) throw new Error("Бронь не найдена");
     const payload = {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       helmetCount: booking.helmetCount,
       mileageAtHandover: booking.mileageAtHandover,
       fuelLevel: booking.fuelLevel,
-      notes: booking.notes
+      notes: booking.notes, partnerName: String(partnerName || "").trim() || null
     };
     const act = await prisma.handoverAct.upsert({ where: { bookingId: booking.id }, update: { payload }, create: { userId: user.id, bookingId: booking.id, payload } });
     const baseUrl = process.env.APP_URL || process.env.TELEGRAM_WEBAPP_URL || request.nextUrl.origin;
