@@ -237,3 +237,33 @@
 /* Rounded rental pill and a continuous today edge. */
 .bookingBar{border-radius:999px!important;padding-left:9px!important;padding-right:9px!important}
 .todayColumn{border-left-width:3px!important;border-right-width:3px!important}
+
+/* Reference-style analytics controls and explicit desktop header controls. */
+.inlineSearchWrap{display:flex;align-items:center;gap:7px;height:38px;padding:0 10px;border:1px solid #9fd7e0;border-radius:12px;background:#f7feff;color:#087f9a;box-shadow:0 2px 8px #0e5c6b12}
+.inlineSearchWrap .inlineSearch{width:100%!important;height:100%!important;border:0!important;padding:0!important;background:transparent!important;box-shadow:none!important;color:#17384c!important}
+.inlineSearchWrap .inlineSearch::placeholder{color:#6d929e!important;opacity:1}
+.dark .inlineSearchWrap{background:#214457;border-color:#4e98a6;color:#8af0f5;box-shadow:0 2px 8px #0003}
+.dark .inlineSearchWrap .inlineSearch{color:#f5fcff!important}
+.dark .inlineSearchWrap .inlineSearch::placeholder{color:#c0d7e2!important}
+.headerTools .notificationButton,.headerTools .iconButton{border-width:2px!important;box-shadow:0 2px 8px #092b3b24!important}
+.headerTools .notificationButton::after{content:"";position:absolute;inset:-3px;border:1px solid transparent;border-radius:14px;pointer-events:none}
+@media(min-width:800px){
+  .headerTools{gap:10px!important}
+  .headerTools .notificationButton,.headerTools .iconButton{width:42px!important;height:42px!important}
+  .headerTools .helpButton{width:42px!important;height:42px!important}
+  .headerTools .notificationButton{background:#e8fbfd!important;color:#087f9a!important}
+  .dark .headerTools .notificationButton{background:#1f5263!important;color:#9cf1f4!important}
+  .panelTitle .inlineSearchWrap{flex:0 0 180px}
+  .panelTitle .inlineSearchWrap .inlineSearch{flex:1 1 auto}
+}
+/* The current-day column is a filled band, not a sequence of broken boxes. */
+.timelineRow .track .todayColumn{background:rgba(35,193,181,.28)!important;border-top:0!important;border-bottom:0!important;box-shadow:inset 3px 0 rgba(7,157,151,.68),inset -3px 0 rgba(7,157,151,.68)!important}
+.dark .timelineRow .track .todayColumn{background:rgba(53,221,207,.32)!important;box-shadow:inset 3px 0 #77f2e8,inset -3px 0 #77f2e8!important}
+/* Grid cells follow the height of the rounded rental pill. */
+@media(max-width:799px){
+  .timelineRow,.timelineRow .track{height:58px!important;min-height:58px!important}
+  .timelineRow .gridCell{height:58px!important}
+  .timelineRow .bookingBar{height:30px!important;min-height:30px!important;top:14px!important;line-height:30px!important}
+  .panelTitle .inlineSearchWrap{grid-column:1 / -1!important;width:100%!important;height:42px!important}
+  .panelTitle .inlineSearchWrap .inlineSearch{font-size:14px!important}
+}
