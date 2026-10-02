@@ -264,19 +264,20 @@ model Notification {
 }
 
 model TeamMember {
-  id           String   @id @default(cuid())
-  ownerId      String   @map("owner_id")
-  telegramId   BigInt?  @unique @map("telegram_id")
-  name         String
-  phone        String?
-  email        String?
-  passwordHash String?  @map("password_hash")
-  role         UserRole @default(MANAGER)
-  permissions  Json?
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  owner        User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  id                String   @id @default(cuid())
+  ownerId           String   @map("owner_id")
+  telegramId        BigInt?  @unique @map("telegram_id")
+  name              String
+  phone             String?
+  email             String?
+  passwordHash      String?  @map("password_hash")
+  commissionPercent Decimal  @default(0) @map("commission_percent") @db.Decimal(5, 2)
+  role              UserRole @default(MANAGER)
+  permissions       Json?
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  owner             User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   @@index([ownerId, active])
   @@index([ownerId, email])
