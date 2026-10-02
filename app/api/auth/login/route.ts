@@ -1,4 +1,4 @@
-export async function GET() { const rawEmail = process.env.OWNER_EMAIL || process.env.ADMIN_EMAIL || process.env.LOGIN_EMAIL || ""; const email = rawEmail.trim().replace(/^(确定|["'])(.*)\1$/, "$2"); return Response.json({ configured: Boolean(email && (process.env.OWNER_PASSWORD || process.env.ADMIN_PASSWORD || process.env.LOGIN_PASSWORD)), emailHint: email ? `${email.slice(0, 2)}***${email.slice(email.indexOf("@"))}` : null }); }
+export async function GET() { const rawEmail = process.env.OWNER_EMAIL || process.env.ADMIN_EMAIL || process.env.LOGIN_EMAIL || ""; const email = rawEmail.trim().replace(/^(["'])(.*)\1$/, "$2"); return Response.json({ configured: Boolean(email && (process.env.OWNER_PASSWORD || process.env.ADMIN_PASSWORD || process.env.LOGIN_PASSWORD)), emailHint: email ? `${email.slice(0, 2)}***${email.slice(email.indexOf("@"))}` : null }); }
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { signSession } from "@/lib/session";
