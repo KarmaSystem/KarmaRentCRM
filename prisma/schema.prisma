@@ -69,11 +69,18 @@ enum UserRole {
   OWNER
   ADMIN
   MANAGER
+  ACCOUNTANT
 }
 
 enum CommissionType {
   PERCENT
   FIXED
+}
+
+enum ContactChannel {
+  PHONE
+  WHATSAPP
+  TELEGRAM
 }
 
 model User {
@@ -135,6 +142,7 @@ model Partner {
   name            String
   contactName     String?        @map("contact_name")
   phone           String?
+  contactChannel  ContactChannel @default(PHONE) @map("contact_channel")
   email           String?
   commissionType  CommissionType @map("commission_type")
   commissionValue Decimal        @map("commission_value") @db.Decimal(12, 2)

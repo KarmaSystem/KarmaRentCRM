@@ -1,0 +1,3 @@
+ALTER TYPE "UserRole" ADD VALUE IF NOT EXISTS 'ACCOUNTANT';
+CREATE TYPE "ContactChannel" AS ENUM ('PHONE', 'WHATSAPP', 'TELEGRAM');
+ALTER TABLE "partners" ADD COLUMN "contact_channel" "ContactChannel" NOT NULL DEFAULT 'PHONE';
