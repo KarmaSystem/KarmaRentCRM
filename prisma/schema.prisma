@@ -93,6 +93,7 @@ model User {
   notifications Notification[]
   partners      Partner[]
   acts          HandoverAct[]
+  teamMembers   TeamMember[]
 
   @@map("users")
 }
@@ -248,4 +249,20 @@ model Notification {
   @@unique([userId, type, referenceId, scheduledAt])
   @@index([status, scheduledAt])
   @@map("notifications")
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  ownerId     String   @map("owner_id")
+  telegramId  BigInt   @unique @map("telegram_id")
+  name        String
+  role        UserRole @default(MANAGER)
+  permissions Json?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, active])
+  @@map("team_members")
 }
