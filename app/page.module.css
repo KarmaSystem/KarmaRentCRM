@@ -634,3 +634,5 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .rentedName{color:#42ff91!important;text-shadow:0 0 8px rgba(66,255,145,.22)}
 .bookingReturnTime{color:inherit!important;font-size:.82em;font-weight:900;white-space:nowrap}
 .bookingBar{transition:background-color .35s ease,border-color .35s ease,opacity .35s ease}
+.helpContent{display:grid;gap:15px;line-height:1.5;color:#436274}.helpContent h3{margin:0;color:#087f9a;font-size:16px}.dark .helpContent{color:#d1e5ee}.dark .helpContent h3{color:#67e3f1}
+@media(min-width:800px){.headerTools{gap:12px!important}.headerTools .iconButton{display:flex!important;width:40px!important;height:40px!important;justify-content:center;align-items:center}}
