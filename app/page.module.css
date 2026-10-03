@@ -513,3 +513,11 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .mediaUpload{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:32px!important;padding:7px 11px!important;border:1px solid #2bb6c5!important;border-radius:9px!important;background:#dff9fb!important;color:#087f9a!important;font-size:11px!important;font-weight:850!important;line-height:1!important;box-shadow:0 2px 7px #087f9a22!important}
 .dark .mediaUpload{background:#245668!important;border-color:#55c4ce!important;color:#e8ffff!important}
 .mediaUpload:hover{filter:brightness(.97)}
+
+/* Booking list actions: photo opens the selected booking's stored media. */
+.bookingCardActions{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.photoButton,.openBookingButton{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:30px;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:800;cursor:pointer}
+.photoButton{border:1px solid #31b9c7;background:#e6fbfd;color:#087f9a}
+.openBookingButton{border:1px solid #c6dce4;background:#f5fafb;color:#315b6b}
+.dark .photoButton{background:#245568;border-color:#55c4ce;color:#e8ffff}
+.dark .openBookingButton{background:#172943;border-color:#3b5a7b;color:#eaf4ff}
