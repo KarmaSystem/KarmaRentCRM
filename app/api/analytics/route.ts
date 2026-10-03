@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAccess, jsonError } from "@/lib/api";
-import { addDays, differenceInCalendarDays, startOfDay } from "date-fns";
+import { addDays, differenceInCalendarDays } from "date-fns";
 
 const money = (value: unknown) => Number(value || 0);
 const statusLabel = (status: string) => ({ PENDING: "Ожидает подтверждения", CONFIRMED: "Подтверждена", PAID: "Оплачена", ACTIVE: "В аренде", COMPLETED: "Завершена", CANCELLED: "Отменена" } as Record<string, string>)[status] || status;
@@ -9,9 +9,14 @@ const statusLabel = (status: string) => ({ PENDING: "Ожидает подтве
 export async function GET(request: NextRequest) {
   try {
     const { user, member } = await getAccess(request);
-    const today = startOfDay(new Date());
-    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    const businessParts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+    const businessYear = Number(businessParts.find(part => part.type === "year")?.value);
+    const businessMonth = Number(businessParts.find(part => part.type === "month")?.value) - 1;
+    const businessDay = Number(businessParts.find(part => part.type === "day")?.value);
+    const businessOffset = 7 * 60 * 60 * 1000;
+    const today = new Date(Date.UTC(businessYear, businessMonth, businessDay) - businessOffset);
+    const monthStart = new Date(Date.UTC(businessYear, businessMonth, 1) - businessOffset);
+    const monthEnd = new Date(Date.UTC(businessYear, businessMonth + 1, 1) - businessOffset);
     const tomorrow = addDays(today, 1);
     const week = addDays(today, 7);
     const monthDays = differenceInCalendarDays(monthEnd, monthStart);
@@ -27,8 +32,6 @@ export async function GET(request: NextRequest) {
     ]);
     const monthPayments = allPayments.filter(payment => payment.paymentDate >= monthStart && payment.paymentDate < monthEnd);
     const rentalPayments = monthPayments.filter(payment => payment.paymentType === "RENTAL");
-    const depositPayments = monthPayments.filter(payment => payment.paymentType === "DEPOSIT");
-    const depositReturns = monthPayments.filter(payment => payment.paymentType === "DEPOSIT_RETURN");
     const allRentalByBooking = new Map<string, number>();
     const monthRentalByBooking = new Map<string, number>();
     const depositByBooking = new Map<string, number>();
@@ -39,8 +42,13 @@ export async function GET(request: NextRequest) {
     for (const payment of rentalPayments) if (payment.bookingId) monthRentalByBooking.set(payment.bookingId, (monthRentalByBooking.get(payment.bookingId) || 0) + money(payment.amount));
     const fallbackRevenue = bookings.filter(booking => booking.createdAt >= monthStart && !allRentalByBooking.has(booking.id)).reduce((sum, booking) => sum + Math.max(0, money(booking.paidAmount) - (depositByBooking.get(booking.id) || 0)), 0);
     const grossRevenue = rentalPayments.reduce((sum, payment) => sum + money(payment.amount), 0) + fallbackRevenue;
-    const deposits = Math.max(0, depositPayments.reduce((sum, payment) => sum + money(payment.amount), 0) - depositReturns.reduce((sum, payment) => sum + money(payment.amount), 0));
+    const depositsHeld = Math.max(0, allPayments.filter(payment => payment.paymentType === "DEPOSIT").reduce((sum, payment) => sum + money(payment.amount), 0) - allPayments.filter(payment => payment.paymentType === "DEPOSIT_RETURN").reduce((sum, payment) => sum + money(payment.amount), 0));
     const expensesTotal = expenses.reduce((sum, expense) => sum + money(expense.amount), 0);
+    const todayCashPayments = allPayments.filter(payment => payment.paymentDate >= today && payment.paymentDate < tomorrow && payment.paymentMethod === "CASH");
+    const todayCashIn = todayCashPayments.filter(payment => ["RENTAL", "DEPOSIT"].includes(payment.paymentType)).reduce((sum, payment) => sum + money(payment.amount), 0);
+    const todayCashOut = todayCashPayments.filter(payment => ["DEPOSIT_RETURN", "REFUND", "EXPENSE"].includes(payment.paymentType)).reduce((sum, payment) => sum + money(payment.amount), 0);
+    const todayExpenses = expenses.filter(expense => expense.date >= today && expense.date < tomorrow).reduce((sum, expense) => sum + money(expense.amount), 0);
+    const cashToHandOver = Math.max(0, todayCashIn - todayCashOut - todayExpenses);
     const periodRentalFor = (booking: { id: string; paidAmount: unknown; createdAt: Date }) => monthRentalByBooking.get(booking.id) || (booking.createdAt >= monthStart && !allRentalByBooking.has(booking.id) ? Math.max(0, money(booking.paidAmount) - (depositByBooking.get(booking.id) || 0)) : 0);
     const totalRentalPaidFor = (booking: { id: string; paidAmount: unknown }) => allRentalByBooking.get(booking.id) || Math.max(0, money(booking.paidAmount) - (depositByBooking.get(booking.id) || 0));
     const partnerFor = (booking: { partner?: { name: string; commissionType: string; commissionValue: unknown } | null; act?: { payload: unknown } | null }) => {
@@ -67,7 +75,7 @@ export async function GET(request: NextRequest) {
       return { id: branch.id, name: branch.name, commissionPercent: money(branch.commissionPercent), income: branchIncome, expenses: branchExpenses, cashIn: branchIncome - branchExpenses, commission: branchCommission };
     });
     const branchCommissionTotal = branchRows.reduce((sum, branch) => sum + branch.commission, 0);
-    const cashIn = grossRevenue + deposits;
+    const cashIn = cashToHandOver;
     const netAfterCommissions = grossRevenue - expensesTotal - partnerCommission - managerCommission - branchCommissionTotal;
     const rentalDays = bookings.reduce((sum, booking) => { const start = booking.startDate < monthStart ? monthStart : booking.startDate; const end = booking.endDate > monthEnd ? monthEnd : booking.endDate; return sum + Math.max(0, differenceInCalendarDays(end, start)); }, 0);
     const todayReturns = bookings.filter(booking => booking.endDate >= today && booking.endDate < tomorrow).map(booking => ({ id: booking.id, clientName: booking.clientName, assetName: booking.asset.name, time: booking.endDate.toISOString(), status: booking.status, statusLabel: statusLabel(booking.status) }));
@@ -84,6 +92,6 @@ export async function GET(request: NextRequest) {
       const monthRentalDays = assetBookings.reduce((sum, booking) => { const start = booking.startDate < monthStart ? monthStart : booking.startDate; const end = booking.endDate > monthEnd ? monthEnd : booking.endDate; return sum + Math.max(0, differenceInCalendarDays(end, start)); }, 0);
       return { assetId: asset.id, name: asset.name, status: asset.status, statusColor: asset.statusColor, currentMileage: asset.currentMileage, oilChangeMileage: asset.oilChangeMileage, variatorServiceMileage: asset.variatorServiceMileage, lastServiceDate: asset.lastServiceDate, serviceNote: asset.serviceNote, rentalDays: days, blockedDays, income, expenses: assetExpenses, profit: income - assetExpenses, bookings: assetBookings.length, monthlyIdle: Math.max(0, monthDays - monthRentalDays) };
     });
-    return Response.json({ revenue: manager ? 0 : grossRevenue, deposits: manager ? 0 : deposits, expenses: manager ? 0 : expensesTotal, partnerCommission: manager ? 0 : partnerCommission, branchCommission: manager ? 0 : branchCommissionTotal, managerCommission, branches: manager ? [] : branchRows, cashIn: manager ? 0 : cashIn, net: manager ? commission : netAfterCommissions, expected: manager ? 0 : expected, commissionPercent: manager ? managerPercent : configuredManagerPercent, commission, isManager: manager, period: { from: monthStart.toISOString(), to: monthEnd.toISOString() }, bookings: bookings.length, rentalDays, blockedDays: blocks.reduce((sum, block) => sum + Math.max(0, differenceInCalendarDays(block.endDate, block.startDate)), 0), byAsset, todayReturns, todayPickups, upcomingPayments, serviceAssets });
+    return Response.json({ revenue: manager ? 0 : grossRevenue, deposits: manager ? 0 : depositsHeld, depositsHeld: manager ? 0 : depositsHeld, cashToHandOver: manager ? 0 : cashToHandOver, expenses: manager ? 0 : expensesTotal, partnerCommission: manager ? 0 : partnerCommission, branchCommission: manager ? 0 : branchCommissionTotal, managerCommission, branches: manager ? [] : branchRows, cashIn: manager ? 0 : cashIn, net: manager ? commission : netAfterCommissions, expected: manager ? 0 : expected, commissionPercent: manager ? managerPercent : configuredManagerPercent, commission, isManager: manager, period: { from: monthStart.toISOString(), to: monthEnd.toISOString() }, bookings: bookings.length, rentalDays, blockedDays: blocks.reduce((sum, block) => sum + Math.max(0, differenceInCalendarDays(block.endDate, block.startDate)), 0), byAsset, todayReturns, todayPickups, upcomingPayments, serviceAssets });
   } catch (error) { console.error("[analytics] failed", error); return jsonError(error, 401); }
 }
