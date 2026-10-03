@@ -852,3 +852,41 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .managerView .teamSection,.managerView .partnerSection,.managerView .branchSection{display:none!important}
 .managerView .deleteButton{display:none!important}
 .managerView .profileSearch input{padding-right:10px}
+
+/* Final fleet-status color contract: these rules intentionally come last. */
+.shell:not(.dark) .assetNameStatus.freeName,
+.shell:not(.dark) .assetNameStatus.freeName .assetName,
+.shell:not(.dark) .assetNameStatus.freeName .assetNumber,
+.shell:not(.dark) .assetCell b.assetNameStatus.freeName,
+.shell:not(.dark) .assetCell b.assetNameStatus.freeName .assetName,
+.shell:not(.dark) .assetCell b.assetNameStatus.freeName .assetNumber,
+.shell:not(.dark) .assetAnalytics b.assetNameStatus.freeName,
+.shell:not(.dark) .assetAnalytics b.assetNameStatus.freeName .assetName,
+.shell:not(.dark) .assetAnalytics b.assetNameStatus.freeName .assetNumber {
+  color: #173c4d !important;
+  text-shadow: none !important;
+}
+.shell:not(.dark) .assetNameStatus.rentedName,
+.shell:not(.dark) .assetNameStatus.rentedName .assetName,
+.shell:not(.dark) .assetNameStatus.rentedName .assetNumber,
+.shell:not(.dark) .assetCell b.assetNameStatus.rentedName,
+.shell:not(.dark) .assetCell b.assetNameStatus.rentedName .assetName,
+.shell:not(.dark) .assetCell b.assetNameStatus.rentedName .assetNumber,
+.shell:not(.dark) .assetAnalytics b.assetNameStatus.rentedName,
+.shell:not(.dark) .assetAnalytics b.assetNameStatus.rentedName .assetName,
+.shell:not(.dark) .assetAnalytics b.assetNameStatus.rentedName .assetNumber {
+  color: #c21f35 !important;
+  text-shadow: 0 0 5px rgba(194,31,53,.16) !important;
+}
+.shell.dark .assetNameStatus.freeName,
+.shell.dark .assetNameStatus.freeName .assetName,
+.shell.dark .assetNameStatus.freeName .assetNumber {
+  color: #f8fbff !important;
+  text-shadow: none !important;
+}
+.shell.dark .assetNameStatus.rentedName,
+.shell.dark .assetNameStatus.rentedName .assetName,
+.shell.dark .assetNameStatus.rentedName .assetNumber {
+  color: #42ff91 !important;
+  text-shadow: 0 0 7px rgba(66,255,145,.25) !important;
+}
