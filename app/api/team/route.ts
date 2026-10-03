@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const telegramId = normalizeTelegram(data.telegramId);
     if (await prisma.teamMember.findFirst({ where: { ownerId: user.id, email, active: true } })) throw new Error("Сотрудник с таким email уже есть в команде");
     if (telegramId && await prisma.teamMember.findUnique({ where: { telegramId } })) throw new Error("Этот Telegram ID уже привязан к другому сотруднику");
-    const result = await prisma.teamMember.create({ data: { ownerId: user.id, name: data.name, telegramId, phone: data.phone || null, email, passwordHash: hashPassword(data.password), commissionPercent: data.commissionPercent, role: data.role, permissions: data.permissions, active: true } });
+    const result = await prisma.teamMember.create({ data: { ownerId: user.id, name: data.name, telegramId, phone: data.phone || null, email, passwordHash: hashPassword(data.password.trim()), commissionPercent: data.commissionPercent, role: data.role, permissions: data.permissions, active: true } });
     console.info(JSON.stringify({ event: "team.member.created", ownerId: user.id, memberId: result.id, role: result.role }));
     return Response.json(publicMember(result), { status: 201 });
   } catch (error) { console.error("[team.create] failed", error); return jsonError(error); }
@@ -60,7 +60,7 @@ export async function PATCH(request: NextRequest) {
     const telegramExists = telegramId ? await prisma.teamMember.findUnique({ where: { telegramId } }) : null;
     if (telegramExists && telegramExists.id !== body.id) throw new Error("Этот Telegram ID уже привязан к другому сотруднику");
     const data: Record<string, unknown> = { name: body.name, telegramId, phone: body.phone || null, email, commissionPercent: body.commissionPercent, role: body.role };
-    if (body.password) data.passwordHash = hashPassword(body.password);
+    if (body.password) data.passwordHash = hashPassword(body.password.trim());
     const updated = await prisma.teamMember.update({ where: { id: body.id }, data });
     console.info(JSON.stringify({ event: "team.member.updated", ownerId: user.id, memberId: body.id }));
     return Response.json(publicMember(updated));
