@@ -12,11 +12,12 @@ export async function GET(request: NextRequest) {
     const to = url.searchParams.get("to") ? endOfDay(new Date(url.searchParams.get("to")!)) : endOfMonth(new Date());
     const partnerQuery = url.searchParams.get("partner")?.trim() || undefined;
     const bookingScope = { userId: user.id, startDate: { lte: to }, endDate: { gte: from }, status: { not: "CANCELLED" as const }, ...(partnerQuery ? { partner: { name: { contains: partnerQuery, mode: "insensitive" as const } } } : {}) };
-    const [payments, expenses, bookings, team] = await Promise.all([
+    const [payments, expenses, bookings, team, partners] = await Promise.all([
       prisma.payment.findMany({ where: { userId: user.id, paymentDate: { gte: from, lte: to }, ...(partnerQuery ? { booking: { partner: { name: { contains: partnerQuery, mode: "insensitive" } } } } : {}) }, include: { booking: { include: { asset: true, partner: true, act: true } } }, orderBy: { paymentDate: "asc" } }),
       prisma.expense.findMany({ where: { userId: user.id, date: { gte: from, lte: to } }, include: { asset: true }, orderBy: { date: "asc" } }),
       prisma.booking.findMany({ where: bookingScope, include: { asset: true, partner: true, act: true }, orderBy: { startDate: "asc" } }),
-      prisma.teamMember.findMany({ where: { ownerId: user.id, active: true }, select: { commissionPercent: true } })
+      prisma.teamMember.findMany({ where: { ownerId: user.id, active: true }, select: { commissionPercent: true } }),
+      prisma.partner.findMany({ where: { userId: user.id } })
     ]);
     const income = payments.filter(p => p.paymentType === "RENTAL").reduce((s, p) => s + Number(p.amount), 0);
     const depositsHeld = payments.filter(p => p.paymentType === "DEPOSIT").reduce((s, p) => s + Number(p.amount), 0) - payments.filter(p => p.paymentType === "DEPOSIT_RETURN").reduce((s, p) => s + Number(p.amount), 0);
@@ -34,7 +35,8 @@ export async function GET(request: NextRequest) {
       row.expected += Math.max(0, Number(booking.totalPrice) - Number(booking.paidAmount));
       row.extensionAmount += extensionAmount;
       row.commissionableIncome += Math.max(0, rentalPaid - extensionAmount);
-      const partner = booking.partner;
+      const payloadPartner = booking?.act?.payload && typeof booking.act.payload === "object" ? String((booking.act.payload as Record<string, unknown>).partnerName || "").trim().toLowerCase() : "";
+      const partner = booking.partner || partners.find(item => item.name.trim().toLowerCase() === payloadPartner);
       if (partner && rentalPaid > extensionAmount) row.partnerCommission += partner.commissionType === "PERCENT" ? Math.max(0, rentalPaid - extensionAmount) * Number(partner.commissionValue) / 100 : Number(partner.commissionValue);
       partnerMap.set(name, row);
     }
