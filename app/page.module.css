@@ -374,3 +374,13 @@
   .timelineRow .gridCell{height:72px!important}
   .timelineRow .bookingBar{top:21px!important;height:30px!important;min-height:30px!important;line-height:30px!important}
 }
+
+/* Narrower mobile day cells; object column and booking logic stay unchanged. */
+@media(max-width:799px){
+  .timeline.calendar-compact{--day-width:42px}
+  .timeline.calendar-normal{--day-width:50px}
+  .timeline.calendar-large{--day-width:58px}
+  .timelineHead .day,.timelineRow .gridCell{width:var(--day-width)!important;min-width:var(--day-width)!important;flex-basis:var(--day-width)!important}
+  .timelineHead .days,.timelineRow .track{width:calc(var(--day-width) * var(--calendar-days,31))!important;min-width:calc(var(--day-width) * var(--calendar-days,31))!important}
+  .timelineHead,.timelineRow{min-width:calc(var(--asset-width) + var(--day-width) * var(--calendar-days,31))!important}
+}
