@@ -574,3 +574,11 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .timeline{height:auto!important;max-height:none!important;overflow-x:auto!important;overflow-y:visible!important;}
   .timelineHead{position:static!important;top:auto!important;}
 }
+
+/* CSS overflow rule: visible becomes auto when the other axis is scrollable. Clip keeps vertical gestures on the document. */
+@media (max-width:799px){
+  .timeline{overflow-x:auto!important;overflow-y:clip!important;}
+}
+@media (min-width:800px){
+  .timeline{overflow-x:auto!important;overflow-y:clip!important;}
+}
