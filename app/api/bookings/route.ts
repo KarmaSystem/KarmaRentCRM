@@ -50,17 +50,19 @@ export async function PATCH(request: NextRequest) {
       return Response.json(restored);
     }
     const requestedExtensionDays = Number.isFinite(Number(body.extendDays)) ? Math.max(0, Math.floor(Number(body.extendDays))) : 0;
-    const startDate = body.startDate ? new Date(body.startDate) : current.startDate;
-    const endDate = body.extendDays != null && requestedExtensionDays > 0 ? new Date(current.endDate) : (body.endDate ? new Date(body.endDate) : current.endDate);
-    if (requestedExtensionDays > 0) endDate.setUTCDate(endDate.getUTCDate() + requestedExtensionDays);
+    const isExtension = body.extendDays != null && requestedExtensionDays > 0;
+    console.info(`[booking.patch] id=${id} mode=${isExtension ? "EXTEND" : "UPDATE"} extendDays=${requestedExtensionDays}`);
+    const startDate = isExtension ? current.startDate : (body.startDate ? new Date(body.startDate) : current.startDate);
+    const endDate = isExtension ? new Date(current.endDate) : (body.endDate ? new Date(body.endDate) : current.endDate);
+    if (isExtension) endDate.setUTCDate(endDate.getUTCDate() + requestedExtensionDays);
     const dailyRate = body.dailyRate != null ? Number(body.dailyRate) : Number(current.dailyRate);
     const nextStartTimeForCheck = String(body.startTime || current.startTime);
     const nextEndTimeForCheck = String(body.endTime || current.endTime);
     const days = rentalDaysByTime(startDate, endDate, nextStartTimeForCheck, nextEndTimeForCheck);
     const overlap = await prisma.booking.findFirst({ where: { userId: user.id, assetId: current.assetId, id: { not: id }, status: { notIn: ["CANCELLED", "COMPLETED"] }, startDate: { lt: endDate }, endDate: { gt: startDate } } });
     if (overlap) throw new Error("Новый период пересекается с другой бронью");
-    const nextStartTime = String(body.startTime || current.startTime);
-    const nextEndTime = String(body.endTime || current.endTime);
+    const nextStartTime = isExtension ? String(current.startTime) : String(body.startTime || current.startTime);
+    const nextEndTime = isExtension ? String(current.endTime) : String(body.endTime || current.endTime);
     const before = { startDate: current.startDate.toISOString(), endDate: current.endDate.toISOString(), startTime: current.startTime, endTime: current.endTime, dailyRate: String(current.dailyRate), totalPrice: String(current.totalPrice) };
     const after = { startDate: startDate.toISOString(), endDate: endDate.toISOString(), startTime: nextStartTime, endTime: nextEndTime, dailyRate: String(dailyRate), totalPrice: String(days * dailyRate) };
     const updated = await prisma.$transaction(async tx => {
@@ -70,11 +72,12 @@ export async function PATCH(request: NextRequest) {
         const oldPayload = (existingAct.payload && typeof existingAct.payload === "object") ? existingAct.payload as Record<string, unknown> : {};
         await tx.handoverAct.update({ where: { bookingId: id }, data: { payload: { ...oldPayload, startDate: startDate.toISOString(), endDate: endDate.toISOString(), startTime: nextStartTime, endTime: nextEndTime, dailyRate: String(dailyRate), totalPrice: String(days * dailyRate) } } });
       }
-      await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: "UPDATE", reason: String(body.reason || "Без комментария"), before, after } });
+      await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: isExtension ? "EXTEND" : "UPDATE", reason: String(body.reason || (isExtension ? `Продление на ${requestedExtensionDays} суток` : "Без комментария")), before, after } });
       return result;
     });
+    console.info(`[booking.patch] saved id=${id} endDate=${updated.endDate.toISOString()} totalPrice=${String(updated.totalPrice)}`);
     return Response.json(updated);
-  } catch (e) { return jsonError(e); }
+  } catch (e) { console.error("[booking.patch] failed", e); return jsonError(e); }
 }
 
 export async function DELETE(request: NextRequest) {
