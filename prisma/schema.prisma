@@ -209,7 +209,10 @@ model Booking {
   mileageAtHandover  Int?           @map("mileage_at_handover")
   fuelLevel          String?        @map("fuel_level")
   returnFuelLevel    String?        @map("return_fuel_level")
+  returnMileage      Int?           @map("return_mileage")
+  returnComment      String?        @map("return_comment")
   returnSurcharge    Decimal        @default(0) @map("return_surcharge") @db.Decimal(12, 2)
+  returnSurchargeType String?       @map("return_surcharge_type")
   notes              String?
   status             BookingStatus  @default(PENDING)
   createdAt          DateTime       @default(now()) @map("created_at")
