@@ -211,10 +211,16 @@ model HandoverAct {
   id          String   @id @default(cuid())
   userId      String   @map("user_id")
   bookingId   String   @unique @map("booking_id")
-  publicToken String   @unique @default(cuid()) @map("public_token")
-  payload     Json
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  publicToken       String    @unique @default(cuid()) @map("public_token")
+  payload           Json
+  status            String    @default("DRAFT")
+  sharedAt          DateTime? @map("shared_at")
+  acceptedAt        DateTime? @map("accepted_at")
+  acceptedName      String?   @map("accepted_name")
+  acceptedIp        String?   @map("accepted_ip")
+  acceptedUserAgent String?   @map("accepted_user_agent")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
