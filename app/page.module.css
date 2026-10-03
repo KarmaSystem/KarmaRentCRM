@@ -384,3 +384,15 @@
   .timelineHead .days,.timelineRow .track{width:calc(var(--day-width) * var(--calendar-days,31))!important;min-width:calc(var(--day-width) * var(--calendar-days,31))!important}
   .timelineHead,.timelineRow{min-width:calc(var(--asset-width) + var(--day-width) * var(--calendar-days,31))!important}
 }
+
+/* Scale is supplied inline as well as by classes, so every mobile device reacts immediately. */
+@media(max-width:799px){
+  .timelineHead .assetHead,.timelineRow .assetCell{flex:0 0 var(--asset-width)!important;width:var(--asset-width)!important;min-width:var(--asset-width)!important;max-width:var(--asset-width)!important;box-sizing:border-box!important}
+  .timelineHead .day,.timelineRow .gridCell{flex:0 0 var(--day-width)!important;width:var(--day-width)!important;min-width:var(--day-width)!important;max-width:var(--day-width)!important;box-sizing:border-box!important}
+  .timelineHead .days,.timelineRow .track{flex:0 0 calc(var(--day-width) * var(--calendar-days,31))!important;width:calc(var(--day-width) * var(--calendar-days,31))!important;min-width:calc(var(--day-width) * var(--calendar-days,31))!important}
+  .timelineHead,.timelineRow{width:calc(var(--asset-width) + var(--day-width) * var(--calendar-days,31))!important;min-width:calc(var(--asset-width) + var(--day-width) * var(--calendar-days,31))!important}
+  .timelineRow .assetCell{padding:6px 5px!important;overflow:hidden!important;white-space:normal!important;justify-content:center!important}
+  .timelineRow .assetCell b{display:block!important;min-width:0!important;width:100%!important;max-width:100%!important;max-height:3.4em!important;overflow:hidden!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.08!important;text-overflow:clip!important}
+  .timelineRow .assetCell .assetNumber{white-space:nowrap!important;display:inline-block!important;flex:none!important}
+  .timelineRow .bookingBar{max-width:none!important;overflow:hidden!important}
+}
