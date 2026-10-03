@@ -791,3 +791,5 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 
 
 .assetCategoryGroup{margin-top:14px}.assetCategoryGroup h3{display:flex;align-items:center;gap:8px;margin:0;padding:8px 0;border-bottom:1px solid var(--line,#c9dbe1);font-size:14px;color:var(--text,#17394d)}.assetCategoryGroup h3 span{font-size:11px;opacity:.7;font-weight:500}.assetCategoryGroup .manageRow{border-bottom:1px solid var(--line,#c9dbe1)}
+
+.financeBreakdown{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}.financeBreakdown span{flex:1 1 150px;padding:10px 12px;border:1px solid rgba(87,201,213,.45);border-radius:12px;background:rgba(19,61,78,.55);color:var(--muted,#9bb2bc);font-size:12px}.financeBreakdown b{color:var(--text,#f3fbff);margin-left:4px}@media(max-width:799px){.financeBreakdown{gap:6px}.financeBreakdown span{flex-basis:calc(50% - 6px);font-size:11px;padding:9px 8px}}

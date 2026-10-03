@@ -219,6 +219,8 @@ model HandoverAct {
   sharedAt          DateTime? @map("shared_at")
   acceptedAt        DateTime? @map("accepted_at")
   acceptedName      String?   @map("accepted_name")
+  acceptedSignature String?   @map("accepted_signature") @db.Text
+  acceptedConsent   Boolean   @default(false) @map("accepted_consent")
   acceptedIp        String?   @map("accepted_ip")
   acceptedUserAgent String?   @map("accepted_user_agent")
   createdAt         DateTime  @default(now()) @map("created_at")

@@ -20,3 +20,6 @@
 @media print{.actPage{padding:0;background:#fff}.actCard{box-shadow:none;border:0;max-width:none}.actActions{display:none}.actFoot{margin-top:12px}}
 
 .actActions{position:relative}.actCloseButton{position:absolute;right:0;top:-8px;width:34px;height:34px;border:1px solid #b9d7de;border-radius:50%;background:#fff;color:#466773;font-size:25px;line-height:1;cursor:pointer;z-index:2}.actCloseButton:hover{background:#eaf8fa;color:#087f99}@media print{.actCloseButton{display:none!important}}
+
+/* Touch signature and explicit rental-consent controls. */
+.actConsent{display:flex;gap:9px;align-items:flex-start;line-height:1.4;font-size:12px}.actConsent input{width:19px;height:19px;flex:0 0 auto}.actSignatureHead{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:12px}.actClearSignature{border:0;background:transparent;color:#087f98;text-decoration:underline;cursor:pointer}.actSignatureCanvas{width:100%;height:150px;display:block;background:#fff;border:2px dashed #79b7c3;border-radius:12px;touch-action:none;cursor:crosshair}.actAcceptBox input:not([type="checkbox"]){width:100%;padding:10px;border:1px solid #b7d8df;border-radius:8px;background:#fff;color:#17394d;font-size:16px}.actAcceptBox p{white-space:normal}.actCloseButton{z-index:5}
