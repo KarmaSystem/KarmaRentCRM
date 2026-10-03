@@ -607,3 +607,13 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .mediaLightbox{position:fixed;inset:0;z-index:2000;background:rgba(3,12,22,.88);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
 .mediaLightbox img{display:block;max-width:min(96vw,1100px);max-height:88vh;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 12px 40px #0008;cursor:default}
 .mediaLightboxClose{position:absolute;top:18px;right:18px;width:42px;height:42px;border:1px solid #8ce8ef;background:#163449;color:#fff;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+
+/* Cross-device long-list scrolling: bookings get their own predictable window. */
+.bookingListWindow{min-height:0}
+@media(max-width:799px){
+  .bookingListWindow{height:calc(100vh - 230px);height:calc(100svh - 230px);min-height:180px;max-height:calc(100svh - 180px);overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:2px 5px 100px 1px;scrollbar-gutter:stable}
+  .bookingListWindow .emptyState{min-height:180px}
+  .businessScrollPage{height:calc(100vh - 78px)!important;height:calc(100svh - 78px)!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding-bottom:120px!important;scrollbar-gutter:stable}
+  .businessScrollPage .largeListGroup{max-height:390px!important;overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+}
+@media(min-width:800px){.bookingListWindow{max-height:calc(100vh - 250px);overflow-y:auto;overscroll-behavior-y:contain;scrollbar-gutter:stable;padding-right:6px}}
