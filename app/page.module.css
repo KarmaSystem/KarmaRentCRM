@@ -628,3 +628,9 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .assetServicePanel{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;padding:10px 12px;border:1px solid #b7e3e7;border-radius:11px;background:#f2fcfd}
 .assetServicePanel>div{display:grid;gap:3px;min-width:0}.assetServicePanel small{color:#527783;overflow-wrap:anywhere}.dark .assetServicePanel{background:#17364a;border-color:#3c7484}.dark .assetServicePanel small{color:#c5e1e7}
 @media(max-width:799px){.assetServicePanel{align-items:flex-start;flex-direction:column}.assetServicePanel .secondaryButtonSmall{align-self:flex-start}.bookingRate{font-size:8px}}
+
+/* Final booking presentation: free labels stay white; active rentals are bright green. */
+.freeName{color:#f8fbff!important;text-shadow:none!important}
+.rentedName{color:#42ff91!important;text-shadow:0 0 8px rgba(66,255,145,.22)}
+.bookingReturnTime{color:inherit!important;font-size:.82em;font-weight:900;white-space:nowrap}
+.bookingBar{transition:background-color .35s ease,border-color .35s ease,opacity .35s ease}
