@@ -544,3 +544,10 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 
 .loginHint{display:block;margin-top:5px;color:#6f8995;font-size:10px;line-height:1.3}.dark .loginHint{color:#b8cfda}
 .loginPanel input[lang="en"]{direction:ltr;text-align:left}
+
+/* Final mobile scroll contract: the document is the only vertical scroller. */
+@media(max-width:799px){
+  .shell{height:auto!important;min-height:100dvh!important;touch-action:pan-y!important;}
+  .content{height:auto!important;max-height:none!important;overflow:visible!important;touch-action:pan-y!important;}
+  .profileGroup,.fleetGroup{height:auto!important;max-height:none!important;overflow:visible!important;overscroll-behavior:visible!important;}
+}
