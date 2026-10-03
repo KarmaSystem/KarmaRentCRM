@@ -437,3 +437,12 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .panelTitle .reportDate{width:112px!important;min-width:112px!important}
   .panelTitle .reportDate input{width:112px!important}
 }
+
+/* Explicit light-theme override for report dates; old dark-mode rules cannot win. */
+.shell:not(.dark) .panelTitle .reportDate input{background:#f7feff!important;color:#17384c!important;border-color:#9fd7e0!important;color-scheme:light!important}
+.shell:not(.dark) .panelTitle .reportDate input::-webkit-datetime-edit{color:#17384c!important}
+.shell:not(.dark) .panelTitle .reportDate input::-webkit-calendar-picker-indicator{filter:none!important;opacity:.7!important}
+@media(max-width:799px){
+  .shell:not(.dark) .panelTitle .reportDate{display:flex!important;min-width:0!important;width:100%!important}
+  .shell:not(.dark) .panelTitle .reportDate input{height:42px!important;width:100%!important;min-width:0!important}
+}
