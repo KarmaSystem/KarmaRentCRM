@@ -446,3 +446,7 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .shell:not(.dark) .panelTitle .reportDate{display:flex!important;min-width:0!important;width:100%!important}
   .shell:not(.dark) .panelTitle .reportDate input{height:42px!important;width:100%!important;min-width:0!important}
 }
+
+/* Hard guard: an open panel/modal never contains or displays any help trigger. */
+.suppressHelp .helpTip{visibility:hidden!important;pointer-events:none!important}
+.suppressHelp .helpPopover{display:none!important;visibility:hidden!important}
