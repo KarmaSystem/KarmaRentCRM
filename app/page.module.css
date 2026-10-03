@@ -521,3 +521,7 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .openBookingButton{border:1px solid #c6dce4;background:#f5fafb;color:#315b6b}
 .dark .photoButton{background:#245568;border-color:#55c4ce;color:#e8ffff}
 .dark .openBookingButton{background:#172943;border-color:#3b5a7b;color:#eaf4ff}
+
+.extension-note{display:flex;flex-wrap:wrap;gap:8px 16px;margin:10px 0;padding:9px 11px;border:1px solid #8bd8df;border-radius:9px;background:#effcfd;color:#176574;font-size:11px}
+.extension-note b{width:100%;font-size:12px}
+.dark .extension-note{background:#153d4e;color:#d7f4fa;border-color:#3d91a0}

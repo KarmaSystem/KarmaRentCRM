@@ -2,13 +2,6 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAccess, jsonError } from "@/lib/api";
 
-const rentalDays = (startDate: Date, endDate: Date, startTime: string, endTime: string) => {
-  const start = new Date(`${startDate.toISOString().slice(0, 10)}T${startTime}`);
-  const end = new Date(`${endDate.toISOString().slice(0, 10)}T${endTime}`);
-  if (end <= start) throw new Error("Время возврата должно быть позже времени выдачи");
-  return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / 86400000));
-};
-
 export async function POST(request: NextRequest) {
   try {
     const { user, member } = await getAccess(request);
@@ -29,17 +22,18 @@ export async function POST(request: NextRequest) {
 
     const dailyRate = body.dailyRate != null ? Number(body.dailyRate) : Number(current.dailyRate);
     if (!Number.isFinite(dailyRate) || dailyRate < 0) throw new Error("Некорректная ставка за сутки");
-    const totalPrice = rentalDays(current.startDate, nextEnd, String(current.startTime || "12:00"), String(current.endTime || "12:00")) * dailyRate;
+    const addedAmount = daysToAdd * dailyRate;
+    const totalPrice = Number(current.totalPrice) + addedAmount;
     console.info(`[booking.extend] requested id=${bookingId} addDays=${daysToAdd} from=${current.endDate.toISOString()} to=${nextEnd.toISOString()}`);
     const before = { startDate: current.startDate.toISOString(), endDate: current.endDate.toISOString(), startTime: current.startTime, endTime: current.endTime, dailyRate: String(current.dailyRate), totalPrice: String(current.totalPrice) };
-    const after = { startDate: current.startDate.toISOString(), endDate: nextEnd.toISOString(), startTime: current.startTime, endTime: current.endTime, dailyRate: String(dailyRate), totalPrice: String(totalPrice) };
+    const after = { startDate: current.startDate.toISOString(), endDate: nextEnd.toISOString(), startTime: current.startTime, endTime: current.endTime, dailyRate: String(dailyRate), totalPrice: String(totalPrice), extensionStartDate: (current.extensionStartDate || current.endDate).toISOString(), extensionEndDate: nextEnd.toISOString(), extensionDays: (current.extensionDays || 0) + daysToAdd, extensionAmount: Number(current.extensionAmount || 0) + addedAmount, partnerCommission: 0 };
 
     const updated = await prisma.$transaction(async tx => {
-      const result = await tx.booking.update({ where: { id: bookingId }, data: { endDate: nextEnd, dailyRate, totalPrice } });
+      const result = await tx.booking.update({ where: { id: bookingId }, data: { endDate: nextEnd, dailyRate, totalPrice, extensionStartDate: current.extensionStartDate || current.endDate, extensionEndDate: nextEnd, extensionDays: (current.extensionDays || 0) + daysToAdd, extensionAmount: Number(current.extensionAmount || 0) + addedAmount } });
       const act = await tx.handoverAct.findUnique({ where: { bookingId } });
       if (act) {
         const oldPayload = act.payload && typeof act.payload === "object" ? act.payload as Record<string, unknown> : {};
-        await tx.handoverAct.update({ where: { bookingId }, data: { payload: { ...oldPayload, endDate: nextEnd.toISOString(), dailyRate: String(dailyRate), totalPrice: String(totalPrice) } } });
+        await tx.handoverAct.update({ where: { bookingId }, data: { payload: { ...oldPayload, endDate: nextEnd.toISOString(), dailyRate: String(dailyRate), totalPrice: String(totalPrice), extension: { from: (current.extensionStartDate || current.endDate).toISOString(), to: nextEnd.toISOString(), days: (current.extensionDays || 0) + daysToAdd, amount: Number(current.extensionAmount || 0) + addedAmount, partnerCommission: 0 } } } });
       }
       await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: bookingId, action: "EXTEND", reason: String(body.reason || `Продление на ${daysToAdd} суток`), before, after } });
       return result;
