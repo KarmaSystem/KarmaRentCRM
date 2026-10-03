@@ -582,3 +582,7 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 @media (min-width:800px){
   .timeline{overflow-x:auto!important;overflow-y:clip!important;}
 }
+
+
+/* Object color setting and clickable booking photos. */
+.colorSetting{display:flex;align-items:center;gap:8px;margin-top:6px}.colorSetting input[type="color"]{width:42px;height:32px;padding:2px;border:1px solid #b9dce3;border-radius:8px;background:transparent;cursor:pointer}.colorSetting code{font-size:11px;color:#4f7380}.modal label>small{display:block;margin-top:4px;color:#7895a0;font-size:10px;font-weight:500}.dark .colorSetting code,.dark .modal label>small{color:#b8d2df}.mediaImageLink{display:block;cursor:zoom-in}.mediaImageLink img{cursor:zoom-in}.mediaImageLink:focus-visible{outline:2px solid #08a7c6;outline-offset:2px}
