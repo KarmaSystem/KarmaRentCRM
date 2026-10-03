@@ -396,3 +396,21 @@
   .timelineRow .assetCell .assetNumber{white-space:nowrap!important;display:inline-block!important;flex:none!important}
   .timelineRow .bookingBar{max-width:none!important;overflow:hidden!important}
 }
+
+/* Mobile grid cells are only slightly taller than the rounded booking pill. */
+@media(max-width:799px){
+  .timelineRow,.timelineRow .track{height:var(--row-height)!important;min-height:var(--row-height)!important}
+  .timelineRow .gridCell{height:var(--row-height)!important;min-height:var(--row-height)!important}
+  .timelineRow .assetCell{height:var(--row-height)!important;min-height:var(--row-height)!important;padding:3px 5px!important}
+  .timelineRow .bookingBar{height:30px!important;min-height:30px!important;top:calc((var(--row-height) - 30px) / 2)!important;line-height:30px!important}
+  .timelineRow .assetCell b{max-height:3.1em!important;line-height:1.02!important}
+  /* The header ? remains available normally, but never sits above an open control. */
+  header:has(.settingsPanel) .headerTools .helpButton,
+  header:has(.notificationCenter) .headerTools .helpButton,
+  header:has(.headerTools .helpPopover) .headerTools .helpButton{visibility:hidden!important;pointer-events:none!important}
+}
+@media(min-width:800px){
+  header:has(.settingsPanel) .headerTools .helpButton,
+  header:has(.notificationCenter) .headerTools .helpButton,
+  header:has(.headerTools .helpPopover) .headerTools .helpButton{visibility:hidden!important;pointer-events:none!important}
+}
