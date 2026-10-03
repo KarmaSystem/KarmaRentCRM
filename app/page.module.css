@@ -339,3 +339,19 @@
   .timelineRow .track .todayColumn{background:rgba(35,193,181,.10)!important;border-left:1px solid rgba(35,193,181,.20)!important;border-right:1px solid rgba(35,193,181,.20)!important;box-shadow:none!important}
   .dark .timelineRow .track .todayColumn{background:rgba(53,221,207,.12)!important;border-left-color:rgba(119,242,232,.28)!important;border-right-color:rgba(119,242,232,.28)!important}
 }
+
+/* Settings belong to the gear menu, keeping the business cabinet clean. */
+.settingsPanel{position:absolute;right:0;top:54px;z-index:1001;display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid #b9dce3;border-radius:14px;box-shadow:0 16px 40px #092b3b33;color:#173c4d}
+.settingsPanel label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;white-space:nowrap}
+.settingsPanel select{height:32px;border:1px solid #b9dce3;border-radius:9px;background:#f5fcfd;color:#173c4d;padding:0 7px;font-size:11px}
+.settingsLogout{height:32px;border:1px solid #efb8bf;border-radius:9px;background:#fff2f3;color:#a64f58;padding:0 10px;font-size:11px;font-weight:850;cursor:pointer}
+.dark .settingsPanel{background:#142238;border-color:#42617f;color:#f8fbff}.dark .settingsPanel select{background:#172b42;color:#f8fbff;border-color:#42617f}.dark .settingsLogout{background:#482c38;color:#ffb8c0;border-color:#8e4c5d}
+.reportDate input{height:38px!important;border:1px solid #9fd7e0!important;border-radius:12px!important;background:#f7feff!important;color:#17384c!important;padding:0 8px!important}
+.dark .reportDate input{background:#214457!important;color:#f5fcff!important;border-color:#4e98a6!important}
+@media(max-width:799px){.settingsPanel{right:0;top:48px;max-width:calc(100vw - 20px);flex-wrap:wrap}.settingsPanel label{width:100%;justify-content:space-between}.settingsPanel select{flex:1;max-width:170px}.settingsLogout{margin-left:auto}.profileSectionHeader .headerActions{display:flex!important;justify-content:flex-start!important;max-width:100%!important}}
+
+@media(max-width:799px){
+  .fleetGroup .manageRow{grid-template-columns:minmax(0,1fr)!important}
+  .fleetGroup .rowActions{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;width:100%!important;gap:6px!important}
+  .fleetGroup .rowActions .editButton,.fleetGroup .rowActions .deleteButton{width:100%!important;min-width:0!important;margin:0!important}
+}

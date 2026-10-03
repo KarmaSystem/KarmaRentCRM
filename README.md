@@ -1,14 +1,72 @@
-# Rental Planner
+# Rental Planner CRM
 
-Rental Planner — mobile-first Telegram Mini App для управления прокатом скутеров, мотоциклов, автомобилей и недвижимости. Интерфейс построен вокруг календарной шахматки, карточек броней и финансовой сводки.
+Mobile-first CRM для проката скутеров, мотоциклов, автомобилей и другого транспорта. Работает в браузере и как Telegram Mini App.
 
-## Реализовано
+## Стабильное production-состояние
 
-В проекте есть Next.js/React/TypeScript интерфейс с пятью разделами: календарь, бронирования, аналитика, финансы и профиль. Календарь поддерживает горизонтальный скролл по датам, вертикальный список объектов, sticky-заголовок и цветные booking bars. Формы используют автоматические расчёты суммы и остатка на уровне бизнес-логики.
+Текущая версия собрана и опубликована в GitHub/Railway. Изменения интерфейса не требуют новой миграции базы данных.
 
-Backend содержит REST route handlers для объектов, броней, платежей, расходов, аналитики и health check. Prisma-схема рассчитана на PostgreSQL и изолирует все сущности по `user_id`. Telegram initData проверяется на сервере через HMAC-SHA256; неподписанный Telegram ID не принимается.
+Проверка Railway:
 
-Также добавлены техническая блокировка объекта, overlap validation, идемпотентная обработка pending notifications, Telegram `/start` webhook-каркас и unit-тесты расчётов.
+```json
+{"status":"ok","database":"ok","service":"rental-planner","migrations":{"applied":15,"latest":"0015_asset_conditions_service"}}
+```
+
+## Что реализовано
+
+### Календарь и бронирования
+
+- Общая календарная сетка с горизонтальной прокруткой дат и вертикальным списком объектов.
+- Мобильная версия использует ту же структуру, что и ПК: фиксированная левая колонка объектов и календарь на всю ширину экрана.
+- Объект в строке показывает название и номер.
+- Booking bar показывает клиента, объект и номер.
+- Поддерживаются короткие интервалы, половина ячейки, овальные брони и непрерывная подсветка текущего дня.
+- Календарь расширяется до 366 дней по датам бронирований.
+- Объекты можно менять местами drag-and-drop.
+- Создание, изменение, продление, архивирование на 14 дней и восстановление бронирований.
+- Даты, время, ставка, депозит и итоговая сумма пересчитываются автоматически.
+
+### Финансы и аналитика
+
+- Платежи, депозиты, расходы, ожидаемые суммы и чистая прибыль.
+- Комиссия менеджера считается от полученной выручки.
+- Для старых броней учитывается `paidAmount`, если отдельная платёжная запись ещё отсутствует.
+- Аналитика по каждому объекту: выручка, расходы, прибыль, брони, арендные дни и простой за месяц.
+- Поиск объекта и партнёра в аналитике.
+- Период отчёта задаётся полями «От» и «До»; конечный день включается полностью.
+- PDF-отчёт формируется в новом окне в виде карточек аренды.
+
+### Партнёры, команда и роли
+
+- OWNER, ADMIN, MANAGER и ACCOUNTANT.
+- Партнёры с контактным именем, телефоном, email и каналом связи.
+- Кнопки телефона, WhatsApp и Telegram.
+- Поиск по объектам, партнёрам и команде.
+- Менеджеры с телефоном, Telegram ID, email, паролем и процентом комиссии.
+- Управление правами и журналом действий.
+
+### Акты, фото и документы
+
+- Акт передачи с партнёром и индивидуальными условиями объекта.
+- Копирование и открытие ссылки на акт.
+- Фото паспорта, фото объекта и PDF-документы добавляются через камеру или файлы.
+- Медиа сохраняются в базе бронирования и доступны в карусели.
+
+### Автопарк и сервис
+
+- Добавление, редактирование, удаление и сортировка объектов.
+- Пробег, сервис масла и вариатора, дата/пробег последнего обслуживания.
+- Уведомления о сервисе и контрольных событиях.
+
+### Уведомления и шапка
+
+- Верхняя шапка содержит `?`, «Уведомления», переключатель темы и шестерёнку.
+- Уведомления кликабельны и ведут в календарь, брони или автопарк.
+- Настройки типов уведомлений открываются внутри колокольчика.
+- Красный badge отображается только при наличии уведомлений.
+- Подсказки закрываются крестиком и не должны перекрывать открытые модальные окна.
+- Тема сохраняется в `localStorage`.
+- Масштаб календаря (`Компактный`, `Обычный`, `Крупный`) и выход находятся в панели шестерёнки, а не в блоке «Мой бизнес».
 
 ## Локальный запуск
 
@@ -20,19 +78,45 @@ npx prisma migrate dev --name init
 npm run dev
 ```
 
-Для локального демо необходимо явно выставить `DEMO_MODE=true`, поднять PostgreSQL и выполнить `npm run db:seed`. В production demo mode должен быть выключен.
+Для локального демо нужно явно выставить `DEMO_MODE=true`, поднять PostgreSQL и выполнить `npm run db:seed`. В production demo mode должен быть выключен.
 
 ## Переменные окружения
 
-`DATABASE_URL` — PostgreSQL connection string. `TELEGRAM_BOT_TOKEN` и `TELEGRAM_BOT_USERNAME` — данные BotFather. `TELEGRAM_WEBAPP_URL` и `APP_URL` — публичный Railway URL. `TELEGRAM_WEBHOOK_SECRET` — секрет webhook. `CRON_SECRET` — bearer secret для cron endpoint. `DEMO_MODE` — только явный локальный режим.
+- `DATABASE_URL` — PostgreSQL connection string.
+- `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME` — данные BotFather.
+- `TELEGRAM_WEBAPP_URL`, `APP_URL` — публичный Railway URL.
+- `TELEGRAM_WEBHOOK_SECRET` — секрет webhook.
+- `CRON_SECRET` — bearer secret для cron endpoint.
+- `AUTH_SECRET` — секрет сессий.
+- `OWNER_EMAIL`, `OWNER_PASSWORD`, `OWNER_TELEGRAM_ID` — данные владельца.
+- `DEMO_MODE` — только локальный режим.
+
+Секреты не хранятся в Git и не должны отправляться в чат.
 
 ## Railway
 
-Создайте Railway Project, добавьте PostgreSQL plugin и service из GitHub-репозитория. В Variables задайте значения из `.env.example`, кроме локального demo режима. Dockerfile запускает `prisma migrate deploy`, затем standalone Next.js server. Health endpoint: `/api/health`. Cron можно направить на `POST /api/cron/notifications` с `Authorization: Bearer $CRON_SECRET` один раз в день в 09:00 в timezone владельца или через отдельный worker.
+Railway Project должен содержать сервис приложения и PostgreSQL plugin. Dockerfile выполняет `prisma migrate deploy`, затем запускает standalone Next.js server.
+
+Health endpoint:
+
+```text
+GET /api/health
+```
+
+Успешный ответ содержит `status: ok` и `database: ok`.
 
 ## Telegram
 
-В BotFather создайте Web App URL на Railway-домене и задайте `TELEGRAM_WEBAPP_URL`. Web App должен отправлять `Telegram.WebApp.initData` на `POST /api/telegram/auth` в поле `initData`; backend проверяет подпись и создаёт профиль пользователя. Никогда не подставляйте Telegram ID из тела запроса без валидации initData.
+В BotFather задайте Web App URL на Railway-домене и установите `TELEGRAM_WEBAPP_URL`. Web App отправляет `Telegram.WebApp.initData` на `POST /api/telegram/auth`; backend проверяет HMAC-SHA256.
+
+Для установки webhook один раз выполните:
+
+```bash
+curl -X POST https://YOUR-RAILWAY-DOMAIN/api/telegram/setup \
+  -H "Authorization: Bearer YOUR_CRON_SECRET"
+```
+
+Webhook работает через `/api/telegram/webhook`. Команда `/start` создаёт профиль и отправляет кнопку открытия Mini App.
 
 ## Проверки
 
@@ -42,18 +126,22 @@ npm test
 npm run build
 ```
 
-Реальный Railway deploy и создание Telegram-бота невозможно выполнить из текущего окружения без доступа к аккаунту Railway и токена BotFather; код и инструкции подготовлены для подключения этих переменных в Railway Variables, без хранения секретов в Git.
+Текущий набор unit-тестов проверяет расчёт периода аренды, итоговую сумму, остаток и пересечения бронирований.
 
-## Расширенные модули
+## Структура
 
-После миграций `0002_expanded_crm` и `0003_team_members` доступны партнёры, роли OWNER/ADMIN/MANAGER, JSON-права менеджеров, сортировка объектов, цвета статусов и публичные акты передачи. Для изменения схемы в Railway используется обычный redeploy: Dockerfile запускает `prisma migrate deploy` до старта Next.js.
+- `app/page.tsx` — календарь, шапка, бронирования, аналитика и профиль.
+- `app/page.module.css` — responsive layout, темы, календарь и мобильные стили.
+- `app/api/analytics/route.ts` — финансовая агрегация, комиссии и operational alerts.
+- `app/api/reports/route.ts` — отчёты по партнёрам и периодам.
+- `app/api/health/route.ts` — проверка приложения и базы.
+- `prisma/schema.prisma` — PostgreSQL-модели.
+- `tests/rental.test.ts` — тесты правил аренды.
 
-## Production Telegram Bot
+## Production workflow
 
-После добавления `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBAPP_URL`, `APP_URL`, `TELEGRAM_WEBHOOK_SECRET` и `CRON_SECRET` вызовите один раз:
-
-```bash
-curl -X POST https://YOUR-RAILWAY-DOMAIN/api/telegram/setup -H "Authorization: Bearer YOUR_CRON_SECRET"
-```
-
-Webhook будет установлен на `/api/telegram/webhook`. Команда `/start` создаёт профиль владельца/пользователя и отправляет кнопку открытия Mini App. Секреты не нужно отправлять в чат или хранить в GitHub.
+1. Запустить `npm run typecheck`, `npm test` и `npm run build`.
+2. Отправить проверенный commit в `main`.
+3. Дождаться Railway redeploy и применения миграций.
+4. Проверить `GET /api/health`.
+5. Для клиента выполнить `Ctrl + F5`; в Telegram Mini App полностью закрыть и открыть окно заново.
