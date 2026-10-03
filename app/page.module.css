@@ -757,3 +757,6 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 @media(min-width:800px){
   .shell .headerTools{right:340px!important}
 }
+
+/* Object status legend: matches the colors used in the fixed left calendar column. */
+.freeDot{background:#38f58a!important}.rentedDot{background:#ff465c!important}
