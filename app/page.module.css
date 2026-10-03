@@ -467,3 +467,13 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .shell .panelTitle .reportDate{grid-template-rows:auto 34px!important;gap:2px!important;font-size:9px!important}
   .shell .panelTitle .reportDate input{height:34px!important;min-height:34px!important;padding:0 6px!important;font-size:11px!important;line-height:34px!important;border-radius:9px!important}
 }
+
+/* Compact date boxes matching the marked mobile reference. */
+@media(max-width:799px){
+  .shell .panelTitle .reportDate{width:150px!important;max-width:150px!important;justify-self:start!important}
+  .shell .panelTitle .reportDate input{width:150px!important;max-width:150px!important;min-width:150px!important}
+}
+@media(max-width:360px){
+  .shell .panelTitle .reportDate{width:calc((100vw - 52px) / 2)!important;max-width:calc((100vw - 52px) / 2)!important}
+  .shell .panelTitle .reportDate input{width:100%!important;max-width:100%!important;min-width:0!important}
+}
