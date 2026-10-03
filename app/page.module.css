@@ -355,3 +355,22 @@
   .fleetGroup .rowActions{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;width:100%!important;gap:6px!important}
   .fleetGroup .rowActions .editButton,.fleetGroup .rowActions .deleteButton{width:100%!important;min-width:0!important;margin:0!important}
 }
+
+/* The scale selector must control the actual mobile timeline dimensions. */
+@media(max-width:799px){
+  .timeline.calendar-compact{--asset-width:78px;--asset-font:8px;--day-width:48px}
+  .timeline.calendar-normal{--asset-width:104px;--asset-font:10px;--day-width:58px}
+  .timeline.calendar-large{--asset-width:132px;--asset-font:12px;--day-width:68px}
+  .timelineHead,.timelineRow{min-width:calc(var(--asset-width) + var(--day-width) * var(--calendar-days,31))!important}
+  .timelineHead .assetHead,.timelineRow .assetCell{width:var(--asset-width)!important;min-width:var(--asset-width)!important}
+  .timelineHead .days,.timelineRow .track{width:calc(var(--day-width) * var(--calendar-days,31))!important;min-width:calc(var(--day-width) * var(--calendar-days,31))!important}
+  .timelineHead .day,.timelineRow .gridCell{width:var(--day-width)!important;min-width:var(--day-width)!important;flex:0 0 var(--day-width)!important}
+  .timelineRow,.timelineRow .track{height:72px!important;min-height:72px!important}
+  .timelineRow .assetCell{height:72px!important;min-height:72px!important;padding:6px 5px!important;display:flex!important;align-items:center!important;overflow:visible!important}
+  .timelineRow .assetCell b{display:block!important;width:100%!important;max-width:100%!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;word-break:normal!important;font-size:var(--asset-font)!important;line-height:1.08!important;text-align:left!important}
+  .timelineRow .assetCell .assetNumber{display:inline-block!important;white-space:nowrap!important;font-size:clamp(10px,calc(var(--asset-font) + 3px),15px)!important;line-height:1!important}
+  .timelineRow .assetCell small{display:none!important}
+  .timelineRow .track{position:relative!important;overflow:visible!important}
+  .timelineRow .gridCell{height:72px!important}
+  .timelineRow .bookingBar{top:21px!important;height:30px!important;min-height:30px!important;line-height:30px!important}
+}
