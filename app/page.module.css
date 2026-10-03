@@ -129,7 +129,7 @@
 
 /* Mobile booking and notification usability */
 .modalBackdrop{overflow:hidden;overscroll-behavior:contain;touch-action:none}
-.modal{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-gutter:stable;max-height:92dvh}
+.modal{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-gutter:stable;max-height:92vh}
 .modal form,.modal label{min-width:0}
 .bookingForm .formGrid{align-items:start}
 .bookingForm .formGrid>label{min-width:0;overflow:hidden}
@@ -150,7 +150,7 @@
 .videoFuture{font-size:10px;color:#8ba1a8;padding:6px 4px;white-space:nowrap}
 .dark .notificationPrefsPanel{background:#18354a;border-color:#34566a;color:#d9f3f5}.dark .notificationPrefsPanel>b{color:#fff}.dark .notificationSave{background:#1aa9b8}.dark .notificationRow{border-color:#34566a}.dark .notificationRow>button:first-child span{color:#a8c7d0}
 .dark .modal input,.dark .modal select,.dark .modal textarea{background:#173149!important;border-color:#3b6178!important;color:#f2fbff!important}.dark .modal input::placeholder,.dark .modal textarea::placeholder{color:#a8c3ce!important}
-@media(max-width:799px){.modalBackdrop{align-items:flex-start;padding:8px 0}.modal{width:min(100%,560px);max-height:calc(100dvh - 16px);border-radius:16px;padding:13px 12px 18px}.modalHeader{margin-bottom:10px}.modalHeader h2{font-size:18px}.bookingForm .formGrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px}.bookingForm .formGrid>label input[type=date],.bookingForm .formGrid>label input[type=time]{font-size:12px;padding-left:7px;padding-right:5px}.bookingForm .bookingMoneyGrid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 66px!important}.bookingForm .bookingMoneyGrid input,.bookingForm .bookingMoneyGrid select{font-size:14px}.bookingForm .daysControl{grid-template-columns:minmax(0,1fr) 116px!important}.notificationCenter{max-width:calc(100vw - 16px);max-height:70dvh;overflow:auto}.notificationPrefsPanel{position:sticky;top:0;z-index:2}.videoFuture{font-size:9px}}
+@media(max-width:799px){.modalBackdrop{align-items:flex-start;padding:8px 0}.modal{width:min(100%,560px);max-height:calc(100vh - 16px);border-radius:16px;padding:13px 12px 18px}.modalHeader{margin-bottom:10px}.modalHeader h2{font-size:18px}.bookingForm .formGrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5px}.bookingForm .formGrid>label input[type=date],.bookingForm .formGrid>label input[type=time]{font-size:12px;padding-left:7px;padding-right:5px}.bookingForm .bookingMoneyGrid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 66px!important}.bookingForm .bookingMoneyGrid input,.bookingForm .bookingMoneyGrid select{font-size:14px}.bookingForm .daysControl{grid-template-columns:minmax(0,1fr) 116px!important}.notificationCenter{max-width:calc(100vw - 16px);max-height:70vh;overflow:auto}.notificationPrefsPanel{position:sticky;top:0;z-index:2}.videoFuture{font-size:9px}}
 
 /* Final readability pass: object labels stay readable at every calendar scale. */
 .timelineHead .assetHead,.timelineRow .assetCell{width:148px!important;min-width:148px!important}
@@ -534,7 +534,7 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 
 /* Mobile profile uses the page scroll; never trap a long fleet inside a nested 55vh box. */
 @media(max-width:799px){
-  .shell{min-height:100dvh!important;overflow:visible!important;overscroll-behavior:auto!important;}
+  .shell{min-height:100vh!important;overflow:visible!important;overscroll-behavior:auto!important;}
   .content{overflow:visible!important;min-height:0!important;padding-bottom:96px!important;}
   .profileGroup{max-height:none!important;height:auto!important;overflow:visible!important;}
   .profileGroupTitle{position:static!important;}
@@ -547,7 +547,7 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 
 /* Final mobile scroll contract: the document is the only vertical scroller. */
 @media(max-width:799px){
-  .shell{height:auto!important;min-height:100dvh!important;touch-action:pan-y!important;}
+  .shell{height:auto!important;min-height:100vh!important;touch-action:pan-y!important;}
   .content{height:auto!important;max-height:none!important;overflow:visible!important;touch-action:pan-y!important;}
   .profileGroup,.fleetGroup{height:auto!important;max-height:none!important;overflow:visible!important;overscroll-behavior:visible!important;}
 }
