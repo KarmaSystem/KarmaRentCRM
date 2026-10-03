@@ -617,3 +617,14 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .businessScrollPage .largeListGroup{max-height:390px!important;overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y;-webkit-overflow-scrolling:touch}
 }
 @media(min-width:800px){.bookingListWindow{max-height:calc(100vh - 250px);overflow-y:auto;overscroll-behavior-y:contain;scrollbar-gutter:stable;padding-right:6px}}
+
+/* Rental status is intentionally high-contrast: red means currently rented, green means free. */
+.assetNameStatus{display:block!important;font-weight:900!important}
+.assetNameStatus .assetName,.assetNameStatus .assetNumber{color:inherit!important}
+.rentedName{color:#ff465c!important;text-shadow:0 0 8px rgba(255,70,92,.18)}
+.freeName{color:#2dff87!important;text-shadow:0 0 8px rgba(45,255,135,.18)}
+.bookingClientName{color:inherit!important;font-weight:800}
+.bookingRate{color:inherit!important;font-size:.82em;font-weight:800;white-space:nowrap}
+.assetServicePanel{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;padding:10px 12px;border:1px solid #b7e3e7;border-radius:11px;background:#f2fcfd}
+.assetServicePanel>div{display:grid;gap:3px;min-width:0}.assetServicePanel small{color:#527783;overflow-wrap:anywhere}.dark .assetServicePanel{background:#17364a;border-color:#3c7484}.dark .assetServicePanel small{color:#c5e1e7}
+@media(max-width:799px){.assetServicePanel{align-items:flex-start;flex-direction:column}.assetServicePanel .secondaryButtonSmall{align-self:flex-start}.bookingRate{font-size:8px}}
