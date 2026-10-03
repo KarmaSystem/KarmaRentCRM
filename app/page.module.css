@@ -493,3 +493,13 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .fleetGroup .rowActions{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-start!important;align-items:center!important;gap:6px!important;width:100%!important;max-width:none!important}
   .fleetGroup .rowActions .editButton,.fleetGroup .rowActions .deleteButton{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;max-width:none!important;min-width:0!important;height:30px!important;padding:5px 9px!important;font-size:10px!important;line-height:1!important;white-space:nowrap!important;overflow:visible!important}
 }
+
+/* Desktop calendar: fill the available monitor width instead of leaving a right-side void. */
+@media(min-width:800px){
+  .content:has(.timeline){width:100%!important;max-width:none!important;box-sizing:border-box!important}
+  .timeline{display:block!important;width:100%!important;max-width:none!important;overflow:auto!important}
+  .timelineHead,.timelineRow{display:flex!important;width:100%!important;min-width:100%!important;max-width:none!important}
+  .timelineHead .assetHead,.timelineRow .assetCell{flex:0 0 132px!important;width:132px!important;min-width:132px!important;max-width:132px!important}
+  .timelineHead .days,.timelineRow .track{flex:1 1 auto!important;width:auto!important;min-width:0!important;max-width:none!important}
+  .timelineHead .day,.timelineRow .gridCell{flex:1 1 0!important;width:auto!important;min-width:0!important;max-width:none!important}
+}
