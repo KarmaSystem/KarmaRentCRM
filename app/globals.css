@@ -11,3 +11,5 @@
 @media(max-width:600px){.actConditions{padding:12px}.actConditions pre{font-size:11px;line-height:1.45}}
 
 @media(max-width:799px){html,body{overflow-y:auto!important;overflow-x:hidden!important;height:auto!important;min-height:100%!important;overscroll-behavior-y:none!important;-webkit-overflow-scrolling:touch!important;}}
+
+@media(max-width:799px){html,body{overflow-y:scroll!important;overflow-x:hidden!important;position:static!important;}}
