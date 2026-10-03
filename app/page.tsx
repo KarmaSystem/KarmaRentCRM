@@ -24,19 +24,7 @@ export default function Home() {
   useEffect(() => { const savedTheme = window.localStorage.getItem("rp_theme"); if (savedTheme === "dark") setDarkMode(true); const savedScale = window.localStorage.getItem("rp_calendar_scale"); if (savedScale) setCalendarScale(savedScale); const savedNotifications = window.localStorage.getItem("rf_notification_prefs"); if (savedNotifications) { try { setNotificationPrefs(current => ({ ...current, ...JSON.parse(savedNotifications) })); } catch {} } const savedDismissed = window.localStorage.getItem("rf_dismissed_notifications"); if (savedDismissed) { try { setDismissedNotifications(JSON.parse(savedDismissed)); } catch {} } const webApp = window.Telegram?.WebApp; if (webApp) { webApp.ready(); webApp.expand(); } void refresh(); }, [refresh]);
   useEffect(() => { if (tab === "bookings" && bookingView === "archive") void api("/api/bookings?archived=true").then(setArchivedBookings).catch(() => setArchivedBookings([])); }, [tab, bookingView, api]);
   useEffect(() => { if (!toast) return; const timer = window.setTimeout(() => setToast(""), 3500); return () => window.clearTimeout(timer); }, [toast]);
-  useEffect(() => {
-    const locked = Boolean(modal || notificationCenterOpen);
-    document.documentElement.style.overflowY = locked ? "hidden" : "auto";
-    document.body.style.overflowY = locked ? "hidden" : "auto";
-    document.body.style.overflowX = "hidden";
-    document.body.style.touchAction = locked ? "none" : "pan-y";
-    return () => {
-      document.documentElement.style.overflowY = "auto";
-      document.body.style.overflowY = "auto";
-      document.body.style.overflowX = "hidden";
-      document.body.style.touchAction = "pan-y";
-    };
-  }, [modal, notificationCenterOpen]);
+
   const notificationItems = { returns: notificationPrefs.returns ? (analytics.todayReturns ?? []).filter(item => !dismissedNotifications.includes(`returns:${item.id}`)) : [], pickups: notificationPrefs.pickups ? (analytics.todayPickups ?? []).filter(item => !dismissedNotifications.includes(`pickups:${item.id}`)) : [], service: notificationPrefs.service ? (analytics.serviceAssets ?? []).filter(item => !dismissedNotifications.includes(`service:${item.id}`)) : [], payments: notificationPrefs.payments ? (analytics.upcomingPayments ?? []).filter(item => !dismissedNotifications.includes(`payments:${item.id}`)) : [] }; const notificationCount = notificationItems.returns.length + notificationItems.pickups.length + notificationItems.service.length + notificationItems.payments.length; const dismissNotification = (key: string) => { const next = [...dismissedNotifications, key]; setDismissedNotifications(next); window.localStorage.setItem("rf_dismissed_notifications", JSON.stringify(next)); }; const visibleBookings = bookingView === "archive" ? archivedBookings : bookings; const filteredBookings = useMemo(() => visibleBookings.filter(b => `${b.clientName} ${b.asset?.name ?? ""}`.toLowerCase().includes(search.toLowerCase())), [visibleBookings, search]);
   const currency = (value: string | number) => `${Number(value).toLocaleString("vi-VN")} ₫`;
   const downloadReport = async () => { try {

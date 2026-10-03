@@ -547,8 +547,8 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 
 /* Final mobile scroll contract: the document is the only vertical scroller. */
 @media(max-width:799px){
-  .shell{height:auto!important;min-height:100vh!important;touch-action:pan-y!important;}
-  .content{height:auto!important;max-height:none!important;overflow:visible!important;touch-action:pan-y!important;}
+  .shell{height:auto!important;min-height:100vh!important;touch-action:auto!important;}
+  .content{height:auto!important;max-height:none!important;overflow:visible!important;touch-action:auto!important;}
   .profileGroup,.fleetGroup{height:auto!important;max-height:none!important;overflow:visible!important;overscroll-behavior:visible!important;}
 }
 
