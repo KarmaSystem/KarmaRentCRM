@@ -420,3 +420,20 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .helpPopover{z-index:100!important}
 .modalBackdrop{z-index:1000!important}
 .modal .helpPopover{z-index:1001!important}
+
+/* Report period fields: readable, theme-aware, and never overlapping. */
+.reportDate{min-width:0!important;box-sizing:border-box!important}
+.reportDate input{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:40px!important;background:#f7feff!important;color:#17384c!important;border:1px solid #9fd7e0!important;border-radius:12px!important;padding:0 8px!important;color-scheme:light!important;}
+@media(max-width:799px){
+  .panelTitle .reportDate{display:flex!important;min-width:0!important;width:100%!important;gap:3px!important}
+  .panelTitle .reportDate input{width:100%!important;height:42px!important;background:#f7feff!important;color:#17384c!important;border-color:#9fd7e0!important;color-scheme:light!important}
+  .panelTitle .reportDate input::-webkit-datetime-edit{color:#17384c!important}
+  .panelTitle .reportDate input::-webkit-calendar-picker-indicator{opacity:.7!important;filter:none!important}
+}
+.dark .reportDate input{background:#172b42!important;color:#f5fcff!important;border-color:#4e98a6!important;color-scheme:dark!important}
+.dark .panelTitle .reportDate input::-webkit-datetime-edit{color:#f5fcff!important}
+.dark .panelTitle .reportDate input::-webkit-calendar-picker-indicator{filter:invert(1)!important;opacity:.85!important}
+@media(min-width:800px){
+  .panelTitle .reportDate{width:112px!important;min-width:112px!important}
+  .panelTitle .reportDate input{width:112px!important}
+}
