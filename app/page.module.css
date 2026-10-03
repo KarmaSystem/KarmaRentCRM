@@ -824,3 +824,20 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .returnBikeButton:hover{background:#d8f2e2}
 .returnBikeButton:disabled{opacity:.55;cursor:not-allowed}
 .dark .returnBikeButton{background:#194936;color:#a8f1c4;border-color:#3d9c6b}
+
+.returnDetails{display:grid;gap:7px;margin:12px 0;padding:11px 12px;border:1px solid #b7dfe1;border-radius:12px;background:#f1fbfc;color:#244e61}
+.returnDetails>b{color:#102a43;font-size:13px}.returnDetails>span{font-size:11px;color:#527783}.returnDetails label{margin-top:2px!important;color:#315d6c!important}.returnDetails input{height:36px!important;margin-top:4px!important;background:#fff!important;color:#102a43!important;border-color:#9fc5d0!important}
+.dark .returnDetails{background:#17364a;border-color:#3d7482;color:#d9f3f5}.dark .returnDetails>b{color:#f5fcff}.dark .returnDetails>span{color:#b9dbe3}.dark .returnDetails label{color:#d9edf2!important}.dark .returnDetails input{background:#0d1929!important;color:#f8fbff!important;border-color:#52718f!important}
+
+.returnDetails{display:grid;gap:7px;margin:12px 0;padding:11px 12px;border:1px solid #b7dfe1;border-radius:12px;background:#f1fbfc;color:#244e61}
+.returnDetails>b{color:#102a43;font-size:13px}.returnDetails>span{font-size:11px;color:#527783}.returnDetails label{margin-top:2px!important;color:#315d6c!important}.returnDetails input{height:36px!important;margin-top:4px!important;background:#fff!important;color:#102a43!important;border-color:#9fc5d0!important}
+.dark .returnDetails{background:#17364a;border-color:#3d7482;color:#d9f3f5}.dark .returnDetails>b{color:#f5fcff}.dark .returnDetails>span{color:#b9dbe3}.dark .returnDetails label{color:#d9edf2!important}.dark .returnDetails input{background:#0d1929!important;color:#f8fbff!important;border-color:#52718f!important}
+
+.returnDetails{display:grid;gap:7px;margin:12px 0;padding:11px 12px;border:1px solid #b7dfe1;border-radius:12px;background:#f1fbfc;color:#244e61}
+.returnDetails>b{color:#102a43;font-size:13px}.returnDetails>span{font-size:11px;color:#527783}.returnDetails label{margin-top:2px!important;color:#315d6c!important}.returnDetails input{height:36px!important;margin-top:4px!important;background:#fff!important;color:#102a43!important;border-color:#9fc5d0!important}
+.dark .returnDetails{background:#17364a;border-color:#3d7482;color:#d9f3f5}.dark .returnDetails>b{color:#f5fcff}.dark .returnDetails>span{color:#b9dbe3}.dark .returnDetails label{color:#d9edf2!important}.dark .returnDetails input{background:#0d1929!important;color:#f8fbff!important;border-color:#52718f!important}
+
+/* Light theme fleet labels: sidebar/calendar asset names must be dark and readable. */
+.shell:not(.dark) .freeName,.shell:not(.dark) .freeName .assetName,.shell:not(.dark) .freeName .assetNumber,.shell:not(.dark) .assetCell b.assetNameStatus.freeName{color:#173c4d!important;text-shadow:none!important}
+.shell:not(.dark) .assetCell .assetName,.shell:not(.dark) .assetAnalytics .assetName{color:#173c4d!important}
+.shell:not(.dark) .assetCell .assetNumber,.shell:not(.dark) .assetAnalytics .assetNumber{color:#c21f35!important}
