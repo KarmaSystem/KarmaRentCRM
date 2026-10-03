@@ -567,3 +567,10 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .timeline{display:block!important;width:100vw!important;max-width:none!important;height:auto!important;max-height:none!important;overflow-x:auto!important;overflow-y:visible!important;overscroll-behavior-x:contain!important;overscroll-behavior-y:visible!important;}
   .timelineHead{position:static!important;top:auto!important;}
 }
+
+/* Final calendar contract on desktop too: page owns vertical scroll, timeline owns horizontal scroll. */
+@media (min-width:800px){
+  .content:has(.timeline){height:auto!important;max-height:none!important;overflow:visible!important;}
+  .timeline{height:auto!important;max-height:none!important;overflow-x:auto!important;overflow-y:visible!important;}
+  .timelineHead{position:static!important;top:auto!important;}
+}
