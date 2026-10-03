@@ -9,6 +9,8 @@ datasource db {
 
 enum AssetCategory {
   MOTORCYCLE
+  POWERFUL_BIKE
+  ELECTRIC
   SCOOTER
   CAR
   REAL_ESTATE

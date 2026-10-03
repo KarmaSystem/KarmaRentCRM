@@ -788,3 +788,6 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 /* Status colors used consistently in calendar, analytics and fleet lists. */
 .freeName { color: #f8fbff !important; text-shadow: none !important; }
 .rentedName { color: #38f58a !important; text-shadow: 0 0 8px rgba(56,245,138,.24) !important; }
+
+
+.assetCategoryGroup{margin-top:14px}.assetCategoryGroup h3{display:flex;align-items:center;gap:8px;margin:0;padding:8px 0;border-bottom:1px solid var(--line,#c9dbe1);font-size:14px;color:var(--text,#17394d)}.assetCategoryGroup h3 span{font-size:11px;opacity:.7;font-weight:500}.assetCategoryGroup .manageRow{border-bottom:1px solid var(--line,#c9dbe1)}
