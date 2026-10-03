@@ -105,8 +105,26 @@ model User {
   teamMembers   TeamMember[]
   auditLogs     AuditLog[]
   BookingMedia  BookingMedia[]
+  branches      Branch[]
 
   @@map("users")
+}
+
+model Branch {
+  id                String    @id @default(cuid())
+  userId            String    @map("user_id")
+  name              String
+  commissionPercent Decimal   @default(0) @map("commission_percent") @db.Decimal(5, 2)
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assets            Asset[]
+  payments          Payment[]
+  expenses          Expense[]
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("branches")
 }
 
 model Asset {
@@ -133,15 +151,18 @@ model Asset {
   createdAt              DateTime      @default(now()) @map("created_at")
   updatedAt              DateTime      @updatedAt @map("updated_at")
   archiveUntil           DateTime?     @map("archive_until")
+  branchId               String?       @map("branch_id")
   user                   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   bookings               Booking[]
   expenses               Expense[]
   blocks                 AssetBlock[]
+  branch                 Branch?       @relation(fields: [branchId], references: [id], onDelete: SetNull)
 
   @@index([userId, sortOrder])
   @@index([userId, status])
   @@index([userId, serviceMileage])
   @@index([userId, category])
+  @@index([userId, branchId])
   @@map("assets")
 }
 
@@ -210,9 +231,9 @@ model Booking {
 }
 
 model HandoverAct {
-  id          String   @id @default(cuid())
-  userId      String   @map("user_id")
-  bookingId   String   @unique @map("booking_id")
+  id                String    @id @default(cuid())
+  userId            String    @map("user_id")
+  bookingId         String    @unique @map("booking_id")
   publicToken       String    @unique @default(cuid()) @map("public_token")
   payload           Json
   status            String    @default("DRAFT")
@@ -225,8 +246,8 @@ model HandoverAct {
   acceptedUserAgent String?   @map("accepted_user_agent")
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking           Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
   @@map("handover_acts")
@@ -243,6 +264,8 @@ model Payment {
   comment       String?
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   booking       Booking?      @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  branchId      String?       @map("branch_id")
+  branch        Branch?       @relation(fields: [branchId], references: [id], onDelete: SetNull)
 
   @@index([userId, paymentDate])
   @@map("payments")
@@ -259,6 +282,8 @@ model Expense {
   createdAt DateTime        @default(now()) @map("created_at")
   user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   asset     Asset?          @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  branchId  String?         @map("branch_id")
+  branch    Branch?         @relation(fields: [branchId], references: [id], onDelete: SetNull)
 
   @@index([userId, date])
   @@index([userId, category])
