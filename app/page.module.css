@@ -461,3 +461,9 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .shell:not(.dark) .panelTitle .reportDate input::-webkit-datetime-edit{color:#17384c!important}
   .shell.dark .panelTitle .reportDate input::-webkit-datetime-edit{color:#f5fcff!important}
 }
+
+/* Smaller mobile report dates, without changing any other mobile controls. */
+@media(max-width:799px){
+  .shell .panelTitle .reportDate{grid-template-rows:auto 34px!important;gap:2px!important;font-size:9px!important}
+  .shell .panelTitle .reportDate input{height:34px!important;min-height:34px!important;padding:0 6px!important;font-size:11px!important;line-height:34px!important;border-radius:9px!important}
+}
