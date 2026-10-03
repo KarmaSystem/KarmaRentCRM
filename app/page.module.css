@@ -601,3 +601,9 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .calendar-normal .timelineRow .assetCell b{font-size:13px!important}
   .calendar-large .timelineRow .assetCell b{font-size:14px!important}
 }
+
+/* In-card photo viewer: keep the user inside the CRM instead of opening a data URL page. */
+.mediaImageLink{border:0;background:transparent;padding:0;width:92px;display:block;cursor:zoom-in}
+.mediaLightbox{position:fixed;inset:0;z-index:2000;background:rgba(3,12,22,.88);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+.mediaLightbox img{display:block;max-width:min(96vw,1100px);max-height:88vh;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 12px 40px #0008;cursor:default}
+.mediaLightboxClose{position:absolute;top:18px;right:18px;width:42px;height:42px;border:1px solid #8ce8ef;background:#163449;color:#fff;border-radius:50%;display:grid;place-items:center;cursor:pointer}

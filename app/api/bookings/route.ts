@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auditReason } from "@/lib/audit";
 import { getAccess, getUser, jsonError } from "@/lib/api";
 import { calculateTotal, assertValidPhone } from "@/lib/rental";
 import { bookingSchema } from "@/lib/validation";
@@ -72,7 +73,7 @@ export async function PATCH(request: NextRequest) {
         const oldPayload = (existingAct.payload && typeof existingAct.payload === "object") ? existingAct.payload as Record<string, unknown> : {};
         await tx.handoverAct.update({ where: { bookingId: id }, data: { payload: { ...oldPayload, startDate: startDate.toISOString(), endDate: endDate.toISOString(), startTime: nextStartTime, endTime: nextEndTime, dailyRate: String(dailyRate), totalPrice: String(days * dailyRate) } } });
       }
-      await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: isExtension ? "EXTEND" : "UPDATE", reason: String(body.reason || (isExtension ? `Продление на ${requestedExtensionDays} суток` : "Без комментария")), before, after } });
+      await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: isExtension ? "EXTEND" : "UPDATE", reason: auditReason(body.reason, before, after, isExtension ? `Продление на ${requestedExtensionDays} суток` : "Изменение бронирования"), before, after } });
       return result;
     });
     console.info(`[booking.patch] saved id=${id} endDate=${updated.endDate.toISOString()} totalPrice=${String(updated.totalPrice)}`);

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auditReason } from "@/lib/audit";
 import { getAccess, jsonError } from "@/lib/api";
 
 export async function POST(request: NextRequest) {
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
         const oldPayload = act.payload && typeof act.payload === "object" ? act.payload as Record<string, unknown> : {};
         await tx.handoverAct.update({ where: { bookingId }, data: { payload: { ...oldPayload, endDate: (nextExtensionEnd || extensionBase).toISOString(), dailyRate: String(dailyRate), totalPrice: String(totalPrice), extension: requestedExtensionDays > 0 ? { from: extensionBase.toISOString(), to: nextEnd.toISOString(), days: requestedExtensionDays, amount: extensionAmount, partnerCommission: 0 } : null } } });
       }
-      await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: bookingId, action: "EXTEND", reason: String(body.reason || `Продление установлено: ${requestedExtensionDays} суток`), before, after } });
+      await tx.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: bookingId, action: "EXTEND", reason: auditReason(body.reason, before, after, `Продление установлено: ${requestedExtensionDays} суток`), before, after } });
       return result;
     });
     console.info(`[booking.extend] saved id=${bookingId} endDate=${updated.endDate.toISOString()} totalPrice=${String(updated.totalPrice)}`);
