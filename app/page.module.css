@@ -591,3 +591,13 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 /* Large collections stay usable on phones: the list is a compact window, while search remains global. */
 .assetAnalyticsList{margin-top:8px;border:1px solid #d8edf1;border-radius:12px;background:#fbfeff;overflow:auto}.assetAnalyticsList .assetAnalytics{padding-left:10px;padding-right:10px}.dark .assetAnalyticsList{background:#102033;border-color:#2d4662}.largeListGroup{overflow:visible!important}.largeListGroup .manageRow{min-width:0}.largeListGroup .profileGroupTitle{position:sticky;top:0;z-index:2;background:inherit}
 @media(max-width:799px){.assetAnalyticsList{max-height:330px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.largeListGroup{max-height:390px!important;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.largeListGroup .profileGroupTitle{margin:-10px -10px 0;padding:10px;background:#fff}.dark .largeListGroup .profileGroupTitle{background:#142238}}
+
+/* Final mobile asset-name rule: readable text, natural wrapping, no ellipsis or font shrinking. */
+@media(max-width:799px){
+  .timelineRow .assetCell b{font-size:clamp(12px,var(--asset-font,12px),15px)!important;line-height:1.12!important;white-space:normal!important;overflow:visible!important;overflow-wrap:anywhere!important;word-break:normal!important;text-overflow:clip!important;max-height:4.5em!important;display:block!important;text-align:left!important}
+  .timelineRow .assetCell .assetName{font-size:inherit!important;line-height:inherit!important;white-space:normal!important}
+  .timelineRow .assetCell .assetNumber{font-size:clamp(13px,calc(var(--asset-font,12px) + 2px),16px)!important;white-space:nowrap!important}
+  .calendar-compact .timelineRow .assetCell b{font-size:12px!important}
+  .calendar-normal .timelineRow .assetCell b{font-size:13px!important}
+  .calendar-large .timelineRow .assetCell b{font-size:14px!important}
+}
