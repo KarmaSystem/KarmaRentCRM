@@ -414,3 +414,9 @@
   header:has(.notificationCenter) .headerTools .helpButton,
   header:has(.headerTools .helpPopover) .headerTools .helpButton{visibility:hidden!important;pointer-events:none!important}
 }
+
+/* Only one help card may exist at a time; all other ? triggers disappear while it is open. */
+body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:none!important}
+.helpPopover{z-index:100!important}
+.modalBackdrop{z-index:1000!important}
+.modal .helpPopover{z-index:1001!important}
