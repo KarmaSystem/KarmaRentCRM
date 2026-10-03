@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAccess, jsonError } from "@/lib/api";
+import { calculateCashToHandOver, calculateDepositsHeld } from "@/lib/finance";
 import { addDays, differenceInCalendarDays } from "date-fns";
 
 const money = (value: unknown) => Number(value || 0);
@@ -42,13 +43,13 @@ export async function GET(request: NextRequest) {
     for (const payment of rentalPayments) if (payment.bookingId) monthRentalByBooking.set(payment.bookingId, (monthRentalByBooking.get(payment.bookingId) || 0) + money(payment.amount));
     const fallbackRevenue = bookings.filter(booking => booking.createdAt >= monthStart && !allRentalByBooking.has(booking.id)).reduce((sum, booking) => sum + Math.max(0, money(booking.paidAmount) - (depositByBooking.get(booking.id) || 0)), 0);
     const grossRevenue = rentalPayments.reduce((sum, payment) => sum + money(payment.amount), 0) + fallbackRevenue;
-    const depositsHeld = Math.max(0, allPayments.filter(payment => payment.paymentType === "DEPOSIT").reduce((sum, payment) => sum + money(payment.amount), 0) - allPayments.filter(payment => payment.paymentType === "DEPOSIT_RETURN").reduce((sum, payment) => sum + money(payment.amount), 0));
+    const depositsHeld = calculateDepositsHeld(allPayments.filter(payment => payment.paymentType === "DEPOSIT").reduce((sum, payment) => sum + money(payment.amount), 0), allPayments.filter(payment => payment.paymentType === "DEPOSIT_RETURN").reduce((sum, payment) => sum + money(payment.amount), 0));
     const expensesTotal = expenses.reduce((sum, expense) => sum + money(expense.amount), 0);
     const todayCashPayments = allPayments.filter(payment => payment.paymentDate >= today && payment.paymentDate < tomorrow && payment.paymentMethod === "CASH");
     const todayCashIn = todayCashPayments.filter(payment => ["RENTAL", "DEPOSIT"].includes(payment.paymentType)).reduce((sum, payment) => sum + money(payment.amount), 0);
     const todayCashOut = todayCashPayments.filter(payment => ["DEPOSIT_RETURN", "REFUND", "EXPENSE"].includes(payment.paymentType)).reduce((sum, payment) => sum + money(payment.amount), 0);
     const todayExpenses = expenses.filter(expense => expense.date >= today && expense.date < tomorrow).reduce((sum, expense) => sum + money(expense.amount), 0);
-    const cashToHandOver = Math.max(0, todayCashIn - todayCashOut - todayExpenses);
+    const cashToHandOver = calculateCashToHandOver(todayCashIn, todayCashOut, todayExpenses);
     const periodRentalFor = (booking: { id: string; paidAmount: unknown; createdAt: Date }) => monthRentalByBooking.get(booking.id) || (booking.createdAt >= monthStart && !allRentalByBooking.has(booking.id) ? Math.max(0, money(booking.paidAmount) - (depositByBooking.get(booking.id) || 0)) : 0);
     const totalRentalPaidFor = (booking: { id: string; paidAmount: unknown }) => allRentalByBooking.get(booking.id) || Math.max(0, money(booking.paidAmount) - (depositByBooking.get(booking.id) || 0));
     const partnerFor = (booking: { partner?: { name: string; commissionType: string; commissionValue: unknown } | null; act?: { payload: unknown } | null }) => {
