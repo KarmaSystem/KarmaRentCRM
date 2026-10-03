@@ -560,3 +560,10 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .modalBackdrop{overscroll-behavior:contain!important;}
   .bottomNav{position:fixed!important;transform:translateZ(0)!important;will-change:transform!important;}
 }
+
+/* Calendar mobile scroll fix: horizontal timeline only; vertical movement belongs to the document. */
+@media (max-width:799px){
+  .content:has(.timeline){overflow:visible!important;max-height:none!important;height:auto!important;}
+  .timeline{display:block!important;width:100vw!important;max-width:none!important;height:auto!important;max-height:none!important;overflow-x:auto!important;overflow-y:visible!important;overscroll-behavior-x:contain!important;overscroll-behavior-y:visible!important;}
+  .timelineHead{position:static!important;top:auto!important;}
+}
