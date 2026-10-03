@@ -531,3 +531,13 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .profileGroup:not(.fleetGroup) .manageRow>div:first-child{display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:visible!important;}
 .profileGroup:not(.fleetGroup) .manageRow>div:first-child b,.profileGroup:not(.fleetGroup) .manageRow>div:first-child span{display:block!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
 @media(max-width:799px){.profileGroup:not(.fleetGroup) .manageRow{flex-wrap:wrap!important;align-items:flex-start!important;}.profileGroup:not(.fleetGroup) .manageRow>div:first-child{width:100%!important;flex-basis:100%!important;}.profileGroup:not(.fleetGroup) .rowActions,.profileGroup:not(.fleetGroup) .contactActions{width:100%!important;justify-content:flex-start!important;}.profileGroup:not(.fleetGroup) .rowActions button{width:auto!important;}}
+
+/* Mobile profile uses the page scroll; never trap a long fleet inside a nested 55vh box. */
+@media(max-width:799px){
+  .shell{min-height:100dvh!important;overflow:visible!important;overscroll-behavior:auto!important;}
+  .content{overflow:visible!important;min-height:0!important;padding-bottom:96px!important;}
+  .profileGroup{max-height:none!important;height:auto!important;overflow:visible!important;}
+  .profileGroupTitle{position:static!important;}
+  .fleetGroup{max-height:none!important;height:auto!important;overflow:visible!important;}
+  .bottomNav{z-index:20!important;}
+}
