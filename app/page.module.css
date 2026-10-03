@@ -636,3 +636,96 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .bookingBar{transition:background-color .35s ease,border-color .35s ease,opacity .35s ease}
 .helpContent{display:grid;gap:15px;line-height:1.5;color:#436274}.helpContent h3{margin:0;color:#087f9a;font-size:16px}.dark .helpContent{color:#d1e5ee}.dark .helpContent h3{color:#67e3f1}
 @media(min-width:800px){.headerTools{gap:12px!important}.headerTools .iconButton{display:flex!important;width:40px!important;height:40px!important;justify-content:center;align-items:center}}
+
+/* Final desktop composition: the calendar owns the full viewport width and the header owns its controls. */
+@media (min-width: 800px) {
+  .shell .header {
+    position: sticky !important;
+    top: 0 !important;
+    min-height: 82px !important;
+    padding: 18px 360px 16px 28px !important;
+    z-index: 40 !important;
+  }
+  .shell .headerTools {
+    position: absolute !important;
+    right: 250px !important;
+    top: 21px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 45 !important;
+  }
+  .shell .headerTools > button,
+  .shell .headerTools .iconButton,
+  .shell .headerTools .notificationButton {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 40px !important;
+    height: 40px !important;
+  }
+  .shell .headerTools .notificationButton em { display: none !important; }
+  .shell .bottomNav {
+    position: fixed !important;
+    top: 21px !important;
+    right: 24px !important;
+    left: auto !important;
+    bottom: auto !important;
+    height: 40px !important;
+    padding: 0 !important;
+    gap: 12px !important;
+    z-index: 46 !important;
+    background: transparent !important;
+  }
+  .shell .bottomNav button {
+    min-width: 48px !important;
+    height: 40px !important;
+    padding: 2px 5px !important;
+    background: transparent !important;
+  }
+  .content:has(.timeline) {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: calc(50% - 50vw) !important;
+    margin-right: 0 !important;
+    padding: 16px 20px 28px !important;
+    box-sizing: border-box !important;
+  }
+  .content:has(.timeline) .timeline {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    border-radius: 14px !important;
+  }
+  .content:has(.timeline) .timelineHead,
+  .content:has(.timeline) .timelineRow {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+  .content:has(.timeline) .timelineHead .assetHead,
+  .content:has(.timeline) .timelineRow .assetCell {
+    flex: 0 0 168px !important;
+    width: 168px !important;
+    min-width: 168px !important;
+    max-width: 168px !important;
+  }
+  .content:has(.timeline) .timelineHead .days,
+  .content:has(.timeline) .timelineRow .track {
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+  .content:has(.timeline) .timelineHead .day,
+  .content:has(.timeline) .timelineRow .gridCell {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+}
