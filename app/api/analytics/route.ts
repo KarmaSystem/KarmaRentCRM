@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAccess, jsonError } from "@/lib/api";
-import { calculateCashToHandOver, calculateDepositsHeld } from "@/lib/finance";
+import { calculateCashToHandOver, calculateCommissionableRental, calculateDepositsHeld, calculatePartnerCommission } from "@/lib/finance";
 import { addDays, differenceInCalendarDays } from "date-fns";
 
 const money = (value: unknown) => Number(value || 0);
@@ -35,8 +35,10 @@ export async function GET(request: NextRequest) {
     const rentalPayments = monthPayments.filter(payment => payment.paymentType === "RENTAL");
     const allRentalByBooking = new Map<string, number>();
     const monthRentalByBooking = new Map<string, number>();
+    const rentalBeforeMonthByBooking = new Map<string, number>();
     const depositByBooking = new Map<string, number>();
     for (const payment of allPayments) {
+      if (payment.paymentType === "RENTAL" && payment.paymentDate < monthStart && payment.bookingId) rentalBeforeMonthByBooking.set(payment.bookingId, (rentalBeforeMonthByBooking.get(payment.bookingId) || 0) + money(payment.amount));
       if (payment.paymentType === "RENTAL" && payment.bookingId) allRentalByBooking.set(payment.bookingId, (allRentalByBooking.get(payment.bookingId) || 0) + money(payment.amount));
       if (payment.paymentType === "DEPOSIT" && payment.bookingId) depositByBooking.set(payment.bookingId, (depositByBooking.get(payment.bookingId) || 0) + money(payment.amount));
     }
@@ -59,8 +61,12 @@ export async function GET(request: NextRequest) {
       return partners.find(partner => partner.name.trim().toLowerCase() === name) || null;
     };
     const partnerCommission = bookings.reduce((sum, booking) => {
-      const partner = partnerFor(booking); if (!partner || partner.commissionType !== "PERCENT") return sum;
-      return sum + Math.max(0, periodRentalFor(booking) - money(booking.extensionAmount)) * money(partner.commissionValue) / 100;
+      const partner = partnerFor(booking); if (!partner) return sum;
+      const fallbackPaid = booking.createdAt >= monthStart && !allRentalByBooking.has(booking.id) ? Math.max(0, money(booking.paidAmount) - (depositByBooking.get(booking.id) || 0)) : 0;
+      const paidThisPeriod = monthRentalByBooking.get(booking.id) || fallbackPaid;
+      const paidBefore = rentalBeforeMonthByBooking.get(booking.id) || 0;
+      const commissionable = calculateCommissionableRental(money(booking.totalPrice), money(booking.extensionAmount), paidBefore, paidBefore + paidThisPeriod);
+      return sum + calculatePartnerCommission(commissionable, partner.commissionType, money(partner.commissionValue));
     }, 0);
     const expected = bookings.reduce((sum, booking) => sum + Math.max(0, money(booking.totalPrice) - totalRentalPaidFor(booking)), 0);
     const configuredManagerPercent = team.reduce((max, item) => Math.max(max, money(item.commissionPercent)), 0);
