@@ -760,3 +760,31 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 
 /* Object status legend: matches the colors used in the fixed left calendar column. */
 .freeDot{background:#38f58a!important}.rentedDot{background:#ff465c!important}
+
+
+/* Final status contract: active rental is bright green in the fixed calendar sidebar,
+   and the short number inside a booking bar uses the same readable green. */
+.timelineRow .assetCell b.assetNameStatus.rentedName,
+.timelineRow .assetCell b.assetNameStatus.rentedName .assetName,
+.timelineRow .assetCell b.assetNameStatus.rentedName .assetNumber {
+  color: #38f58a !important;
+  text-shadow: 0 0 8px rgba(56,245,138,.24) !important;
+}
+.timelineRow .assetCell b.assetNameStatus.freeName,
+.timelineRow .assetCell b.assetNameStatus.freeName .assetName,
+.timelineRow .assetCell b.assetNameStatus.freeName .assetNumber {
+  color: #f8fbff !important;
+  text-shadow: none !important;
+}
+.bookingAssetName {
+  color: #38f58a !important;
+  font-weight: 950 !important;
+  text-shadow: 0 0 7px rgba(56,245,138,.24);
+  white-space: nowrap;
+}
+.dark .bookingAssetName { color: #52ff9a !important; }
+
+
+/* Status colors used consistently in calendar, analytics and fleet lists. */
+.freeName { color: #f8fbff !important; text-shadow: none !important; }
+.rentedName { color: #38f58a !important; text-shadow: 0 0 8px rgba(56,245,138,.24) !important; }
