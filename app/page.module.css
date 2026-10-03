@@ -742,3 +742,18 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 /* Correct calendar asset status colors: free is green, rented is red. */
 .freeName{color:#38f58a!important;text-shadow:0 0 8px rgba(56,245,138,.2)!important}
 .rentedName{color:#ff465c!important;text-shadow:0 0 8px rgba(255,70,92,.22)!important}
+
+/* Business contacts stay compact until the manager opens a card. */
+.manageCard{display:block;border-top:1px solid #dbe8ed;padding:0;margin:0}
+.manageCard summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;cursor:pointer;list-style:none}
+.manageCard summary::-webkit-details-marker{display:none}
+.manageCard summary::after{content:"＋";flex:none;color:#087f9a;font-size:18px;font-weight:700}
+.manageCard[open] summary::after{content:"−"}
+.manageCard summary b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.manageCard summary span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#78909b;font-size:11px}
+.manageCardBody{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 0 10px;color:#55717e;font-size:11px}
+.manageCardBody>span{min-width:0;overflow-wrap:anywhere}
+.dark .manageCard{border-color:#2d4662}.dark .manageCard summary span,.dark .manageCardBody{color:#b9cbe0}
+@media(min-width:800px){
+  .shell .headerTools{right:340px!important}
+}
