@@ -738,3 +738,7 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .headerTools .helpHeaderButton{display:none!important}
   .settingsPanel .settingsHelp{width:100%;height:36px}
 }
+
+/* Correct calendar asset status colors: free is green, rented is red. */
+.freeName{color:#38f58a!important;text-shadow:0 0 8px rgba(56,245,138,.2)!important}
+.rentedName{color:#ff465c!important;text-shadow:0 0 8px rgba(255,70,92,.22)!important}
