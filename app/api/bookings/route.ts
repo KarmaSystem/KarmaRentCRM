@@ -41,6 +41,7 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const id = String(body.id);
     const current = await prisma.booking.findFirst({ where: { id, userId: user.id } });
+    const changeReason = String(body.reason || "").trim();
     if (!current) throw new Error("Бронь не найдена");
     if (body.restore === true) {
       if (member && !["ADMIN", "ACCOUNTANT"].includes(member.role)) throw new Error("Восстановление доступно администратору и бухгалтеру");
@@ -67,9 +68,10 @@ export async function PATCH(request: NextRequest) {
     const before = { startDate: current.startDate.toISOString(), endDate: current.endDate.toISOString(), startTime: current.startTime, endTime: current.endTime, dailyRate: String(current.dailyRate), totalPrice: String(current.totalPrice) };
     const after = { startDate: startDate.toISOString(), endDate: endDate.toISOString(), startTime: nextStartTime, endTime: nextEndTime, dailyRate: String(dailyRate), totalPrice: String(days * dailyRate) };
     const updated = await prisma.$transaction(async tx => {
-      const result = await tx.booking.update({ where: { id }, data: { startDate, endDate, startTime: nextStartTime, endTime: nextEndTime, dailyRate, totalPrice: days * dailyRate } });
       const existingAct = await tx.handoverAct.findUnique({ where: { bookingId: id } });
-      if (existingAct) {
+      if (existingAct?.status === "ACCEPTED" && !changeReason) throw new Error("Подписанный акт нельзя изменить без обязательного комментария");
+      const result = await tx.booking.update({ where: { id }, data: { startDate, endDate, startTime: nextStartTime, endTime: nextEndTime, dailyRate, totalPrice: days * dailyRate } });
+      if (existingAct && existingAct.status !== "ACCEPTED") {
         const oldPayload = (existingAct.payload && typeof existingAct.payload === "object") ? existingAct.payload as Record<string, unknown> : {};
         await tx.handoverAct.update({ where: { bookingId: id }, data: { payload: { ...oldPayload, startDate: startDate.toISOString(), endDate: endDate.toISOString(), startTime: nextStartTime, endTime: nextEndTime, dailyRate: String(dailyRate), totalPrice: String(days * dailyRate) } } });
       }
@@ -84,6 +86,7 @@ export async function PATCH(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { user, member } = await getAccess(request);
+    if (member?.role === "MANAGER") throw new Error("Менеджеру доступно только редактирование");
     const id = String(request.nextUrl.searchParams.get("id") || (await request.json().catch(() => ({}))).id);
     const current = await prisma.booking.findFirst({ where: { id, userId: user.id } });
     if (!current) throw new Error("Бронь не найдена");

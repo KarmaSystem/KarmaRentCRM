@@ -847,3 +847,8 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .bookingListWindow .bookingCard{padding:9px 10px;border-radius:11px}.bookingListWindow .cardMeta{margin-top:8px}.bookingListWindow .paymentLine{margin-top:6px;padding-top:6px}.bookingListWindow .bookingCardActions{gap:5px;margin-top:7px}.bookingListWindow .bookingCardActions button{font-size:10px;padding:5px 7px}.returnListButton{border:1px solid #8bcfb0;background:#e8f8ee;color:#187246;border-radius:7px;padding:5px 7px;font-size:10px;font-weight:850;cursor:pointer}.dark .returnListButton{background:#194936;color:#a8f1c4;border-color:#3d9c6b}
 .returnInspectionGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.returnDetails textarea{height:58px!important;min-height:58px!important}.damageUpload{display:flex!important;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border:1px dashed #8bcfd5;border-radius:8px;background:#f7feff;color:#315d6c!important}.damageUpload input{width:auto!important;height:auto!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;color:#087f9a!important;font-size:10px!important}.dark .damageUpload{background:#17364a;border-color:#4c97a3;color:#d9edf2!important}
 @media(max-width:799px){.bookingListWindow{grid-template-columns:1fr!important}.bookingListWindow .bookingCard{padding:8px 9px}.returnInspectionGrid{gap:5px}}
+
+/* Role visibility: managers work with bookings/fleet but do not see administration sections or delete controls. */
+.managerView .teamSection,.managerView .partnerSection,.managerView .branchSection{display:none!important}
+.managerView .deleteButton{display:none!important}
+.managerView .profileSearch input{padding-right:10px}

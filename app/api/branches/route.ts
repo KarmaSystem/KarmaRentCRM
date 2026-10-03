@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getUser, jsonError } from "@/lib/api";
+import { getAccess, getUser, jsonError } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   try { const user = await getUser(request); return Response.json(await prisma.branch.findMany({ where: { userId: user.id }, orderBy: { createdAt: "asc" } })); }
@@ -15,6 +15,6 @@ export async function PATCH(request: NextRequest) {
   catch (e) { return jsonError(e); }
 }
 export async function DELETE(request: NextRequest) {
-  try { const user = await getUser(request); const id = String((await request.json()).id); await prisma.branch.delete({ where: { id, userId: user.id } }); return Response.json({ ok: true }); }
+  try { const { user, member } = await getAccess(request); if (member?.role === "MANAGER") throw new Error("Менеджеру доступно только редактирование"); const id = String((await request.json()).id); await prisma.branch.delete({ where: { id, userId: user.id } }); return Response.json({ ok: true }); }
   catch (e) { return jsonError(e); }
 }
