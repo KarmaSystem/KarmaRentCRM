@@ -477,3 +477,19 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .shell .panelTitle .reportDate{width:calc((100vw - 52px) / 2)!important;max-width:calc((100vw - 52px) / 2)!important}
   .shell .panelTitle .reportDate input{width:100%!important;max-width:100%!important;min-width:0!important}
 }
+
+/* Mobile profile: the add action shares the search row and the fleet list can grow. */
+.profileAddAction{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto}
+@media(max-width:799px){
+  .profileSearch{display:flex!important;align-items:center!important;gap:6px!important;width:100%!important;max-width:none!important;margin-bottom:12px!important;overflow:visible!important}
+  .profileSearch .searchBox{flex:1 1 auto!important;width:auto!important;max-width:none!important;min-width:0!important}
+  .profileAddAction{flex:0 0 auto!important}
+  .profileAddAction .primaryButton{height:38px!important;padding:7px 9px!important;white-space:nowrap!important}
+  .fleetGroup{max-height:none!important;height:auto!important;overflow:visible!important}
+  .fleetGroup .manageRow{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:5px!important;align-items:start!important;overflow:visible!important;padding:8px 0!important}
+  .fleetGroup .manageRow>div:first-child{width:100%!important;max-width:100%!important;min-width:0!important}
+  .fleetGroup .manageRow>div:first-child b{display:block!important;white-space:normal!important;overflow:visible!important;overflow-wrap:anywhere!important;font-size:11px!important;line-height:1.15!important}
+  .fleetGroup .manageRow>div:first-child span{display:block!important;white-space:normal!important;overflow:visible!important;font-size:9px!important;line-height:1.15!important}
+  .fleetGroup .rowActions{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-start!important;align-items:center!important;gap:6px!important;width:100%!important;max-width:none!important}
+  .fleetGroup .rowActions .editButton,.fleetGroup .rowActions .deleteButton{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;max-width:none!important;min-width:0!important;height:30px!important;padding:5px 9px!important;font-size:10px!important;line-height:1!important;white-space:nowrap!important;overflow:visible!important}
+}
