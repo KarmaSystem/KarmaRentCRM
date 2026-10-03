@@ -541,3 +541,6 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .fleetGroup{max-height:none!important;height:auto!important;overflow:visible!important;}
   .bottomNav{z-index:20!important;}
 }
+
+.loginHint{display:block;margin-top:5px;color:#6f8995;font-size:10px;line-height:1.3}.dark .loginHint{color:#b8cfda}
+.loginPanel input[lang="en"]{direction:ltr;text-align:left}
