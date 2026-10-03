@@ -525,3 +525,9 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 .extension-note{display:flex;flex-wrap:wrap;gap:8px 16px;margin:10px 0;padding:9px 11px;border:1px solid #8bd8df;border-radius:9px;background:#effcfd;color:#176574;font-size:11px}
 .extension-note b{width:100%;font-size:12px}
 .dark .extension-note{background:#153d4e;color:#d7f4fa;border-color:#3d91a0}
+
+/* Team rows: always keep employee identity visible beside actions. */
+.profileGroup:not(.fleetGroup) .manageRow{display:flex!important;align-items:center!important;min-width:0!important;gap:8px!important;}
+.profileGroup:not(.fleetGroup) .manageRow>div:first-child{display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:visible!important;}
+.profileGroup:not(.fleetGroup) .manageRow>div:first-child b,.profileGroup:not(.fleetGroup) .manageRow>div:first-child span{display:block!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+@media(max-width:799px){.profileGroup:not(.fleetGroup) .manageRow{flex-wrap:wrap!important;align-items:flex-start!important;}.profileGroup:not(.fleetGroup) .manageRow>div:first-child{width:100%!important;flex-basis:100%!important;}.profileGroup:not(.fleetGroup) .rowActions,.profileGroup:not(.fleetGroup) .contactActions{width:100%!important;justify-content:flex-start!important;}.profileGroup:not(.fleetGroup) .rowActions button{width:auto!important;}}
