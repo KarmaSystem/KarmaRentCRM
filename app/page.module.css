@@ -552,7 +552,6 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
   .profileGroup,.fleetGroup{height:auto!important;max-height:none!important;overflow:visible!important;overscroll-behavior:visible!important;}
 }
 
-.layoutToggle{display:flex;gap:4px;margin-top:5px}.layoutToggle button{border:1px solid #b9dce3;background:transparent;color:#527583;border-radius:7px;padding:4px 8px;font-size:10px;font-weight:800;cursor:pointer}.layoutToggle .layoutActive{background:#0b9fb8;color:#fff;border-color:#0b9fb8}.dark .layoutToggle button{color:#c6e5ec;border-color:#4c7180}.dark .layoutToggle .layoutActive{color:#fff;background:#0b9fb8}
 
 /* The document remains the stable vertical scroll root on mobile. */
 @media(max-width:799px){
