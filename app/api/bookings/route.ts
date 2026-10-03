@@ -49,8 +49,10 @@ export async function PATCH(request: NextRequest) {
       await prisma.auditLog.create({ data: { userId: user.id, actorName: member?.name || "Владелец", actorRole: member?.role || "OWNER", entity: "BOOKING", entityId: id, action: "RESTORE", reason: "Бронь восстановлена из архива", before: { status: current.status }, after: { status: "PENDING", archiveUntil: null } } });
       return Response.json(restored);
     }
+    const requestedExtensionDays = Number.isFinite(Number(body.extendDays)) ? Math.max(0, Math.floor(Number(body.extendDays))) : 0;
     const startDate = body.startDate ? new Date(body.startDate) : current.startDate;
-    const endDate = body.endDate ? new Date(body.endDate) : current.endDate;
+    const endDate = body.extendDays != null && requestedExtensionDays > 0 ? new Date(current.endDate) : (body.endDate ? new Date(body.endDate) : current.endDate);
+    if (requestedExtensionDays > 0) endDate.setUTCDate(endDate.getUTCDate() + requestedExtensionDays);
     const dailyRate = body.dailyRate != null ? Number(body.dailyRate) : Number(current.dailyRate);
     const nextStartTimeForCheck = String(body.startTime || current.startTime);
     const nextEndTimeForCheck = String(body.endTime || current.endTime);
