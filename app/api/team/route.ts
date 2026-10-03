@@ -59,7 +59,7 @@ export async function PATCH(request: NextRequest) {
     if (await prisma.teamMember.findFirst({ where: { ownerId: user.id, email, active: true, id: { not: body.id } } })) throw new Error("Сотрудник с таким email уже есть в команде");
     const telegramExists = telegramId ? await prisma.teamMember.findUnique({ where: { telegramId } }) : null;
     if (telegramExists && telegramExists.id !== body.id) throw new Error("Этот Telegram ID уже привязан к другому сотруднику");
-    const data: Record<string, unknown> = { name: body.name, telegramId, phone: body.phone || null, email, commissionPercent: body.commissionPercent, role: body.role };
+    const data: Record<string, unknown> = { name: body.name, telegramId, phone: body.phone || null, email, commissionPercent: body.commissionPercent, role: body.role, permissions: body.permissions };
     if (body.password) data.passwordHash = hashPassword(body.password.trim());
     const updated = await prisma.teamMember.update({ where: { id: body.id }, data });
     console.info(JSON.stringify({ event: "team.member.updated", ownerId: user.id, memberId: body.id }));

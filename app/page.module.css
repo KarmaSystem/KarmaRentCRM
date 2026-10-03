@@ -796,3 +796,31 @@ body:has(.helpPopover) .helpButton{visibility:hidden!important;pointer-events:no
 
 .branchFinanceGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:0 0 14px}.branchFinanceGrid>div{display:grid;gap:3px;padding:10px 12px;border:1px solid rgba(80,184,237,.35);border-radius:12px;background:rgba(80,184,237,.08)}.branchFinanceGrid span,.branchFinanceGrid small{color:var(--muted);font-size:12px}
 @media(max-width:799px){.branchFinanceGrid{grid-template-columns:1fr 1fr}.branchFinanceGrid>div{min-width:0}}
+
+/* Final accessibility contrast guard: light theme must never inherit white text on white surfaces. */
+.shell:not(.dark){color:#102a43;background:#f4f8fb}
+.shell:not(.dark) .header,.shell:not(.dark) .content,.shell:not(.dark) .panel,.shell:not(.dark) .metric,.shell:not(.dark) .bookingCard,.shell:not(.dark) .profileGroup,.shell:not(.dark) .messagePanel,.shell:not(.dark) .timeline,.shell:not(.dark) .timelineRow,.shell:not(.dark) .timelineHead{color:#102a43}
+.shell:not(.dark) .header h1,.shell:not(.dark) h2,.shell:not(.dark) h3,.shell:not(.dark) .panelTitle b,.shell:not(.dark) .cardTop b,.shell:not(.dark) .cardMeta strong,.shell:not(.dark) .metric strong,.shell:not(.dark) .profileGroup b,.shell:not(.dark) .manageCard summary b,.shell:not(.dark) .manageCardBody,.shell:not(.dark) .assetCategoryGroup h3,.shell:not(.dark) .assetDetailGrid b,.shell:not(.dark) .notificationCenterHead b{color:#102a43!important}
+.shell:not(.dark) .eyebrow,.shell:not(.dark) .metric span,.shell:not(.dark) .manageCard summary span,.shell:not(.dark) .manageCardBody>span,.shell:not(.dark) .assetCell small,.shell:not(.dark) .panelTitle span,.shell:not(.dark) .assetAnalytics small,.shell:not(.dark) .messageItem small,.shell:not(.dark) .dashboardTitle>span,.shell:not(.dark) .mutedText,.shell:not(.dark) .modal label>small{color:#476979!important}
+.shell:not(.dark) .modal{background:#fff;color:#102a43;border-color:#b9d2dc}
+.shell:not(.dark) .modal label,.shell:not(.dark) .modalHeader h2,.shell:not(.dark) .modalHeader button{color:#102a43}
+.shell:not(.dark) .modal input,.shell:not(.dark) .modal select,.shell:not(.dark) .modal textarea,.shell:not(.dark) .searchBox input,.shell:not(.dark) .inlineSearch{background:#fff;color:#102a43!important;border-color:#9fc5d0}
+.shell:not(.dark) .modal input::placeholder,.shell:not(.dark) .modal textarea::placeholder,.shell:not(.dark) .searchBox input::placeholder,.shell:not(.dark) .inlineSearch::placeholder{color:#668592!important;opacity:1}
+.shell:not(.dark) .modal option{background:#fff;color:#102a43}
+.shell:not(.dark) .financeBreakdown{background:transparent;color:#274d5e}
+.shell:not(.dark) .financeBreakdown span{background:#eaf7fa;color:#315f70;border-color:#9fd7df}
+.shell:not(.dark) .financeBreakdown b{color:#102a43}
+.shell:not(.dark) .branchFinanceGrid>div{background:#f1fbfd;color:#102a43}
+.shell:not(.dark) .branchFinanceGrid span,.shell:not(.dark) .branchFinanceGrid small{color:#476979}
+.shell:not(.dark) .analyticsExplain,.shell:not(.dark) .formHint,.shell:not(.dark) .selectedAsset,.shell:not(.dark) .mediaBox,.shell:not(.dark) .bookingMediaPicker,.shell:not(.dark) .assetDetailPanel{color:#244e61}
+.shell:not(.dark) .analyticsExplain p,.shell:not(.dark) .explainGrid span,.shell:not(.dark) .detailBox small,.shell:not(.dark) .paymentLine,.shell:not(.dark) .mediaCarousel figcaption,.shell:not(.dark) .assetDetailBookings small{color:#476979}
+.shell:not(.dark) .notificationCenter,.shell:not(.dark) .notificationPrefsPanel{background:#fff;color:#102a43;border-color:#9fc5d0}
+.shell:not(.dark) .notificationRow>button:first-child,.shell:not(.dark) .notificationSettingsLink{color:#174b60}
+.shell:not(.dark) .gridCell{border-color:#d6e5ea}
+.shell:not(.dark) .todayColumn{background:rgba(19,170,164,.12)!important}
+.shell:not(.dark) .settingsPanel{color:#102a43}
+
+.returnBikeButton{width:100%;margin:10px 0 4px;border:1px solid #8bcfb0;background:#e8f8ee;color:#187246;border-radius:10px;padding:11px;font-weight:850;cursor:pointer}
+.returnBikeButton:hover{background:#d8f2e2}
+.returnBikeButton:disabled{opacity:.55;cursor:not-allowed}
+.dark .returnBikeButton{background:#194936;color:#a8f1c4;border-color:#3d9c6b}
