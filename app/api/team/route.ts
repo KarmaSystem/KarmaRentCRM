@@ -11,7 +11,7 @@ const schema = z.object({
   phone: z.string().trim().optional(),
   email: z.string().trim().email("Введите корректный email для входа").optional().or(z.literal("")),
   password: z.string().min(6, "Пароль должен содержать минимум 6 символов").optional(),
-  commissionPercent: z.coerce.number().min(0).max(100).default(0),
+  commissionPercent: z.coerce.number().min(0).max(100),
   role: z.enum(["ADMIN", "MANAGER", "ACCOUNTANT"]).default("MANAGER"),
   permissions: z.record(z.boolean()).default({}),
 });

@@ -289,10 +289,23 @@ model Expense {
   asset     Asset?          @relation(fields: [assetId], references: [id], onDelete: SetNull)
   branchId  String?         @map("branch_id")
   branch    Branch?         @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  media     ExpenseMedia[]
 
   @@index([userId, date])
   @@index([userId, category])
   @@map("expenses")
+}
+
+model ExpenseMedia {
+  id        String   @id @default(cuid())
+  expenseId String   @map("expense_id")
+  filename  String?
+  dataUrl   String   @map("data_url") @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  expense   Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+
+  @@index([expenseId, createdAt])
+  @@map("expense_media")
 }
 
 model AssetBlock {
