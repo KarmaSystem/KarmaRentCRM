@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAccess, jsonError } from "@/lib/api";
-import { calculateCashDepositsHeld, calculateCashToHandOver, calculateCommissionableRental, calculateDepositsHeld, calculatePartnerCommission } from "@/lib/finance";
+import { calculateCashDepositsHeld, calculateCashToHandOver, calculateCommissionableRental, calculateDepositsHeld, calculateLeadCommission, calculateManagerCommission } from "@/lib/finance";
 import { addDays, differenceInCalendarDays } from "date-fns";
 
 const money = (value: unknown) => Number(value || 0);
@@ -65,30 +65,37 @@ export async function GET(request: NextRequest) {
       const name = String(payload.partnerName || "").trim().toLowerCase();
       return partners.find(partner => partner.name.trim().toLowerCase() === name) || null;
     };
-    const partnerCommission = bookings.reduce((sum, booking) => {
-      const partner = partnerFor(booking); if (!partner) return sum;
+    const commissionForBooking = (booking: { id: string; totalPrice: unknown; extensionAmount: unknown; paidAmount: unknown; createdAt: Date; assetId: string; partner?: { name: string; commissionType: string; commissionValue: unknown } | null; act?: { payload: unknown } | null }) => {
+      // A partner is paid only for a referred lead. The rate comes from the
+      // branch assigned to the bike, never from the partner card.
+      if (!partnerFor(booking)) return 0;
+      const branchPercent = money(assets.find(asset => asset.id === booking.assetId)?.branch?.commissionPercent);
+      if (branchPercent <= 0) return 0;
       const fallbackPaid = booking.createdAt >= monthStart && !allRentalByBooking.has(booking.id) ? Math.max(0, money(booking.paidAmount) - (depositByBooking.get(booking.id) || 0)) : 0;
       const paidThisPeriod = monthRentalByBooking.get(booking.id) || fallbackPaid;
       const paidBefore = rentalBeforeMonthByBooking.get(booking.id) || 0;
       const commissionable = calculateCommissionableRental(money(booking.totalPrice), money(booking.extensionAmount), paidBefore, paidBefore + paidThisPeriod);
-      return sum + calculatePartnerCommission(commissionable, partner.commissionType, money(partner.commissionValue));
-    }, 0);
+      return calculateLeadCommission(commissionable, true, branchPercent);
+    };
+    const partnerCommission = bookings.reduce((sum, booking) => sum + commissionForBooking(booking), 0);
     const expected = bookings.reduce((sum, booking) => sum + Math.max(0, money(booking.totalPrice) - totalRentalPaidFor(booking)), 0);
-    const configuredManagerPercent = team.reduce((max, item) => Math.max(max, money(item.commissionPercent)), 0);
+    // Every active manager has a fixed percentage of total rental revenue.
+    // Two managers at 12.5% therefore produce 25%, not max(12.5%).
+    const configuredManagerPercent = team.reduce((total, item) => total + Math.max(0, money(item.commissionPercent)), 0);
     const manager = Boolean(member);
     const managerPercent = member ? money(member.commissionPercent) : 0;
-    const commission = grossRevenue * managerPercent / 100;
-    const managerCommission = manager ? commission : grossRevenue * configuredManagerPercent / 100;
+    const commission = calculateManagerCommission(grossRevenue, [managerPercent]);
+    const managerCommission = manager ? commission : calculateManagerCommission(grossRevenue, team.map(item => money(item.commissionPercent)));
     const branchRows = branches.map(branch => {
       const branchAssets = assets.filter(asset => asset.branchId === branch.id);
       const branchIncome = branchAssets.reduce((sum, asset) => sum + bookings.filter(booking => booking.assetId === asset.id).reduce((inner, booking) => inner + periodRentalFor(booking), 0), 0);
       const branchExpenses = expenses.filter(expense => expense.branchId === branch.id).reduce((sum, expense) => sum + money(expense.amount), 0);
-      const branchCommission = branchIncome * money(branch.commissionPercent) / 100;
-      return { id: branch.id, name: branch.name, commissionPercent: money(branch.commissionPercent), income: branchIncome, expenses: branchExpenses, cashIn: branchIncome - branchExpenses, commission: branchCommission };
+      const branchCommission = bookings.filter(booking => branchAssets.some(asset => asset.id === booking.assetId)).reduce((sum, booking) => sum + commissionForBooking(booking), 0);
+      return { id: branch.id, name: branch.name, commissionPercent: money(branch.commissionPercent), income: branchIncome, expenses: branchExpenses, cashIn: branchIncome - branchExpenses - branchCommission, commission: branchCommission };
     });
     const branchCommissionTotal = branchRows.reduce((sum, branch) => sum + branch.commission, 0);
     const cashIn = cashToHandOver;
-    const netAfterCommissions = grossRevenue - expensesTotal - partnerCommission - managerCommission - branchCommissionTotal;
+    const netAfterCommissions = grossRevenue - expensesTotal - partnerCommission - managerCommission;
     const rentalDays = bookings.reduce((sum, booking) => { const start = booking.startDate < monthStart ? monthStart : booking.startDate; const end = booking.endDate > monthEnd ? monthEnd : booking.endDate; return sum + Math.max(0, differenceInCalendarDays(end, start)); }, 0);
     const todayReturns = bookings.filter(booking => booking.endDate >= today && booking.endDate < tomorrow).map(booking => ({ id: booking.id, clientName: booking.clientName, assetName: booking.asset.name, time: booking.endDate.toISOString(), status: booking.status, statusLabel: statusLabel(booking.status) }));
     const todayPickups = bookings.filter(booking => booking.startDate >= today && booking.startDate < tomorrow).map(booking => ({ id: booking.id, clientName: booking.clientName, assetName: booking.asset.name, time: booking.startDate.toISOString(), status: booking.status, statusLabel: statusLabel(booking.status) }));

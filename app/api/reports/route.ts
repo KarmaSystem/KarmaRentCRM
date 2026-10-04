@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAccess, jsonError } from "@/lib/api";
 import { endOfDay, endOfMonth, startOfMonth } from "date-fns";
-import { calculateCommissionableRental, calculatePartnerCommission } from "@/lib/finance";
+import { calculateCommissionableRental, calculateLeadCommission, calculateManagerCommission } from "@/lib/finance";
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,9 +14,9 @@ export async function GET(request: NextRequest) {
     const partnerQuery = url.searchParams.get("partner")?.trim() || undefined;
     const bookingScope = { userId: user.id, startDate: { lte: to }, endDate: { gte: from }, status: { not: "CANCELLED" as const }, ...(partnerQuery ? { partner: { name: { contains: partnerQuery, mode: "insensitive" as const } } } : {}) };
     const [payments, expenses, bookings, team, partners, allRentalPayments] = await Promise.all([
-      prisma.payment.findMany({ where: { userId: user.id, paymentDate: { gte: from, lte: to }, ...(partnerQuery ? { booking: { partner: { name: { contains: partnerQuery, mode: "insensitive" } } } } : {}) }, include: { booking: { include: { asset: true, partner: true, act: true } } }, orderBy: { paymentDate: "asc" } }),
+      prisma.payment.findMany({ where: { userId: user.id, paymentDate: { gte: from, lte: to }, ...(partnerQuery ? { booking: { partner: { name: { contains: partnerQuery, mode: "insensitive" } } } } : {}) }, include: { booking: { include: { asset: { include: { branch: true } }, partner: true, act: true } } }, orderBy: { paymentDate: "asc" } }),
       prisma.expense.findMany({ where: { userId: user.id, date: { gte: from, lte: to } }, include: { asset: true }, orderBy: { date: "asc" } }),
-      prisma.booking.findMany({ where: bookingScope, include: { asset: true, partner: true, act: true }, orderBy: { startDate: "asc" } }),
+      prisma.booking.findMany({ where: bookingScope, include: { asset: { include: { branch: true } }, partner: true, act: true }, orderBy: { startDate: "asc" } }),
       prisma.teamMember.findMany({ where: { ownerId: user.id, active: true }, select: { commissionPercent: true } }),
       prisma.partner.findMany({ where: { userId: user.id } }),
       prisma.payment.findMany({ where: { userId: user.id, paymentType: "RENTAL" } })
@@ -43,13 +43,14 @@ export async function GET(request: NextRequest) {
       row.commissionableIncome += commissionableIncome;
       const payloadPartner = booking?.act?.payload && typeof booking.act.payload === "object" ? String((booking.act.payload as Record<string, unknown>).partnerName || "").trim().toLowerCase() : "";
       const partner = booking.partner || partners.find(item => item.name.trim().toLowerCase() === payloadPartner);
-      if (partner) row.partnerCommission += calculatePartnerCommission(commissionableIncome, partner.commissionType, Number(partner.commissionValue));
+      const branchPercent = Number((booking.asset as any)?.branch?.commissionPercent || 0);
+      if (partner && branchPercent > 0) row.partnerCommission += calculateLeadCommission(commissionableIncome, true, branchPercent);
       partnerMap.set(name, row);
     }
     for (const payment of payments) { const name = partnerName(payment.booking); const row = partnerMap.get(name) || { bookings: 0, income: 0, expected: 0, extensionAmount: 0, commissionableIncome: 0, partnerCommission: 0 }; if (payment.paymentType === "RENTAL") row.income += Number(payment.amount); partnerMap.set(name, row); }
     const partnerCommission = Array.from(partnerMap.values()).reduce((sum, row) => sum + row.partnerCommission, 0);
-    const managerCommissionPercent = team.reduce((max, item) => Math.max(max, Number(item.commissionPercent)), 0);
-    const managerCommission = income * managerCommissionPercent / 100;
+    const managerCommissionPercent = team.reduce((total, item) => total + Math.max(0, Number(item.commissionPercent)), 0);
+    const managerCommission = calculateManagerCommission(income, [managerCommissionPercent]);
     return Response.json({
       generatedAt: new Date().toISOString(), period: { from: from.toISOString(), to: to.toISOString() },
       totals: { income, depositsHeld: Math.max(0, depositsHeld), expenses: expenseTotal, partnerCommission, managerCommission, cashIn: income + Math.max(0, depositsHeld), profit: income - expenseTotal - partnerCommission - managerCommission, bookings: bookings.length, payments: payments.length },
